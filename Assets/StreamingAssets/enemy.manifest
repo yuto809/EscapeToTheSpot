@@ -1,0 +1,75 @@
+ManifestFileVersion: 0
+CRC: 860193301
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 0e966155bcebbec98a68cd5e57ceddb1
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: a8e7e7fc26ba03d03c37d25bc00668a8
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 82
+  Script: {instanceID: 0}
+- Class: 83
+  Script: {instanceID: 0}
+- Class: 90
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3859c287a05e3d84bae4b1d4620233e4, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: fcb73b690c023734fb267911061a15c6, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 6514ba86f976d724ab63844a6015b2aa, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 5e658bfc1e524494b9e54a1c92d8c1e0, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 37b7c58dc2d739b4c90fe59f6875debf, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: a38e39ada51aaba4db6d352ce218849e, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 75453f0413251fd42811d1b1eb4728c1, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 058a2736f2afd564eae55007a87eed87, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 05290e240b3dc004b968b50c9029639f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: b450e0eeaa67f4e4f83448b61a571d3b, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 135
+  Script: {instanceID: 0}
+- Class: 137
+  Script: {instanceID: 0}
+- Class: 143
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Prefabs/Enemy/EnemySphere.prefab
+Dependencies: []
