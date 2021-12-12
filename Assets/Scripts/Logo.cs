@@ -1,25 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Logo : MonoBehaviour
 {
-    private FadeManager fadeManager;
+    private FadeManager _fadeManager;
 
     [SerializeField]
-    private float logoTime;
+    private float _logoTime;
 
     void Start()
     {
-        fadeManager = GameObject.Find("FadeManager").GetComponent<FadeManager>();
-        Invoke("Next", logoTime);
+        _fadeManager = GameObject.Find("FadeManager").GetComponent<FadeManager>();
+        Invoke("Next", _logoTime);
     }
 
     void Next()
     {
-        fadeManager.FadeOutFlg = true;
-        fadeManager.SceneName = "TitleScene";
+        _fadeManager.FadeOutFlg = true;
+        _fadeManager.SceneName = "TitleScene";
 //        SceneManager.LoadScene("TitleScene");
     }
 }

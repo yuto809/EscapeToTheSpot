@@ -4,51 +4,51 @@ using UnityEngine;
 
 public class UnityChanController : MonoBehaviour
 {
-    private GameManager gameManager;
-    private AudioManager audioManager;
-    private CharacterController characterController;
+    private GameManager _gameManager;
+    private AudioManager _audioManager;
+    private CharacterController _characterController;
 
     // [0]はdead
     // [1]はclear
-    private AudioSource []unitySE;
-    private Animator animator;
-    AudioClip audioClip;
+    private AudioSource[] _unitySE;
+    private Animator _animator;
+    AudioClip _audioClip;
     //　キャラクターの速度
-    private Vector3 velocity;
+    private Vector3 _velocity;
     //　キャラクターの歩くスピード
     [SerializeField]
-    private float walkSpeed = 2f;
+    private float _walkSpeed = 2f;
     //　キャラクターの走るスピード
     [SerializeField]
-    private float runSpeed = 4f;
+    private float _runSpeed = 4f;
     [SerializeField]
-    private float jumpSpeed = 2f;
+    private float _jumpSpeed = 2f;
 
-    Vector3 input;
+    Vector3 _input;
 
     // 入力方向フラグ
-    bool leftDirection = false;
-    bool rightDirection = false;
-    bool upDirection = false;
-    bool downDirection = false;
+    bool _leftDirection = false;
+    bool _rightDirection = false;
+    bool _upDirection = false;
+    bool _downDirection = false;
 
-    private bool deadFlg;
-    private bool successFlg;
+    private bool _deadFlg;
+    private bool _successFlg;
     
     void Start()
     {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
         // AudioManagerのゲームオブジェクトを探す
-        audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
+        _audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
 
-        unitySE = GetComponents<AudioSource>();
+        _unitySE = GetComponents<AudioSource>();
         // コンポーネントの取得を行う
-        characterController = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
+        _characterController = GetComponent<CharacterController>();
+        _animator = GetComponent<Animator>();
 
-        deadFlg = false;
-        successFlg = false;
+        _deadFlg = false;
+        _successFlg = false;
     }
     
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -74,62 +74,62 @@ public class UnityChanController : MonoBehaviour
     // ボタン処理
     public void pushLeft()
     {
-        leftDirection = true;
+        _leftDirection = true;
     }
 
     public void pushRight()
     {
-        rightDirection = true;
+        _rightDirection = true;
     }
 
     public void pushUp()
     {
-        upDirection = true;
+        _upDirection = true;
     }
 
     public void pushDown()
     {
-        downDirection = true;
+        _downDirection = true;
     }
 
     public void leaveLeft()
     {
-        leftDirection = false;
+        _leftDirection = false;
     }
 
     public void leaveRight()
     {
-        rightDirection = false;
+        _rightDirection = false;
     }
 
     public void leaveUp()
     {
-        upDirection = false;
+        _upDirection = false;
     }
 
     public void leaveDown()
     {
-        downDirection = false;
+        _downDirection = false;
     }
 
     public void unityDead()
     {
         // unityChanが生きている場合
-        if (false == deadFlg)
+        if (false == _deadFlg)
         {
-            deadFlg = true;
-            animator.SetBool("Dead", true);
+            _deadFlg = true;
+            _animator.SetBool("Dead", true);
 
             // 障害物に当たったらSEを流す
-            audioClip = Resources.Load("SE/Damage/Damage") as AudioClip;
-            audioManager.DamageSE(audioClip);
+            _audioClip = Resources.Load("SE/Damage/Damage") as AudioClip;
+            _audioManager.DamageSE(_audioClip);
 
-            animator.SetTrigger("Damage");
-            animator.SetTrigger("KneelDown");
+            _animator.SetTrigger("Damage");
+            _animator.SetTrigger("KneelDown");
 
             // ゆにぃいい・・・(負け)
-            unitySE[0].Play();
-            gameManager.GameOverFlgSet(true);
+            _unitySE[0].Play();
+            _gameManager.GameOverFlgSet(true);
         }
     }
 
@@ -137,14 +137,14 @@ public class UnityChanController : MonoBehaviour
     public void unitySuccess()
     {
         //Debug.Log("ゲームクリアフラグ　：" + gameManager.GameClearFlg);
-        if (false == successFlg)
+        if (false == _successFlg)
         {
-            if (gameManager.GameClearFlg)
+            if (_gameManager.GameClearFlg)
             {
                 //Debug.Log("SUCCESS");
-                successFlg = true;
-                animator.SetTrigger("Success");
-                unitySE[1].Play();
+                _successFlg = true;
+                _animator.SetTrigger("Success");
+                _unitySE[1].Play();
                 return;
             }
         }
@@ -153,54 +153,54 @@ public class UnityChanController : MonoBehaviour
     // 入力された方向に座標を変更する
     public void ToUp()
     {
-        if (upDirection)
+        if (_upDirection)
         {
-            input = new Vector3(0, 0, 1.0f);
+            _input = new Vector3(0, 0, 1.0f);
         }
     }
 
     public void ToRight()
     {
-        if (rightDirection)
+        if (_rightDirection)
         {
-            input = new Vector3(1.0f, 0, 0);
+            _input = new Vector3(1.0f, 0, 0);
         }
     }
 
     public void ToDown()
     {
-        if (downDirection)
+        if (_downDirection)
         {
-            input = new Vector3(0, 0, -1.0f);
+            _input = new Vector3(0, 0, -1.0f);
         }
     }
 
     public void ToLeft()
     {
-        if (leftDirection)
+        if (_leftDirection)
         {
-            input = new Vector3(-1.0f, 0, 0);
+            _input = new Vector3(-1.0f, 0, 0);
         }
     }
 
     void Update()
     {
         // unityChanが死んだ、もしくはゲームクリアの場合
-        if ((true == deadFlg) || (true == successFlg))
+        if ((true == _deadFlg) || (true == _successFlg))
         {
-            animator.SetFloat("Speed", 0f);
+            _animator.SetFloat("Speed", 0f);
             return;
         }
 
         // 地面と接地している場合
-        if (characterController.isGrounded)
+        if (_characterController.isGrounded)
         {
             // 速度の初期化
-            velocity = Vector3.zero;
+            _velocity = Vector3.zero;
 
             // ワールド座標(グローバル座標)
             // x軸に左右キーの値、z軸に縦下キーの値を設定する
-            input = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+            _input = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
 
             // 移動
             ToUp();
@@ -209,18 +209,18 @@ public class UnityChanController : MonoBehaviour
             ToLeft();
 
             // 3次元ベクトルの長さ(x^2 + y^2 + z^2 のルート)
-            if (input.magnitude > 0.1f)
+            if (_input.magnitude > 0.1f)
             {
                 // ワールド座標を見て向きを変えている
-                transform.rotation = Quaternion.LookRotation(input);
+                transform.rotation = Quaternion.LookRotation(_input);
 
                 // 現在の位置に入力した方向を足して、その方向を向かせる
                 //transform.LookAt(transform.position + input.normalized);
 
                 // アニメータ起動
-                animator.SetFloat("Speed", input.magnitude);
+                _animator.SetFloat("Speed", _input.magnitude);
 
-                if (input.magnitude > 0.5f)
+                if (_input.magnitude > 0.5f)
                 {
                     // ★
                     // FPSとかに向いているやり方
@@ -233,16 +233,16 @@ public class UnityChanController : MonoBehaviour
 
                     // transform.forwardはオブジェクトが向いている方向のベクトル(z軸)
                     // 速度はどの向きにどれぐらい動くか (velocity += transform.forward * runSpeed;)でも可能
-                    velocity += input * runSpeed;
+                    _velocity += _input * _runSpeed;
                 }
                 else
                 {
-                    velocity += input * walkSpeed;
+                    _velocity += _input * _walkSpeed;
                 }
             }
             else
             {
-                animator.SetFloat("Speed", 0f);
+                _animator.SetFloat("Speed", 0f);
             }
         }
 
@@ -254,7 +254,7 @@ public class UnityChanController : MonoBehaviour
         //}
 
         // CharactorControllerは重力を考慮する必要がある
-        velocity.y += Physics.gravity.y * Time.deltaTime;
-        characterController.Move(velocity * Time.deltaTime);
+        _velocity.y += Physics.gravity.y * Time.deltaTime;
+        _characterController.Move(_velocity * Time.deltaTime);
     }
 }

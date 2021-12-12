@@ -1,18 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-
 
 public class GameManager : MonoBehaviour
 {
-    //ƒVƒ“ƒOƒ‹ƒgƒ“İ’è‚±‚±‚©‚ç
-    static public GameManager instance;
+    //ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³è¨­å®šã“ã“ã‹ã‚‰
+    static public GameManager Instance;
 
-    // UnityChan‚ªSpotArea‚É—¯‚Ü‚Á‚Ä‚¢‚éƒtƒ‰ƒO
+    // UnityChanãŒSpotAreaã«ç•™ã¾ã£ã¦ã„ã‚‹ãƒ•ãƒ©ã‚°
     public bool StaySpotArea { set; get; }
 
-    // UnityChan‚ªŒo‰ßŠÔ“àSpotArea‚É‚¢‚½‚©‚Ì”»’fƒtƒ‰ƒO
+    // UnityChanãŒçµŒéæ™‚é–“å†…SpotAreaã«ã„ãŸã‹ã®åˆ¤æ–­ãƒ•ãƒ©ã‚°
     public bool GameClearFlg { set; get; }
 
     public bool GameOverFlg { set; get; }
@@ -20,17 +16,17 @@ public class GameManager : MonoBehaviour
     public bool ResultFlg { set; get; }
     
     [SerializeField]
-    private ObstacleGenerator objGen;
+    private ObstacleGenerator _objGen;
 
-    private FadeManager fadeManager;
-    private StageManager stageManager;
+    private FadeManager _fadeManager;
+    private StageManager _stageManager;
 
-    // ƒVƒ“ƒOƒ‹ƒgƒ“‚ÅScene‚ğŒ×‚¢‚Å‚àƒIƒuƒWƒFƒNƒg‚Íc‚·‚æ‚¤‚É‚·‚é
+    // ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã§Sceneã‚’è·¨ã„ã§ã‚‚ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯æ®‹ã™ã‚ˆã†ã«ã™ã‚‹
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
         else
@@ -41,53 +37,53 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // ƒS[ƒ‹ƒtƒ‰ƒO‰Šú‰»
+        // ã‚´ãƒ¼ãƒ«ãƒ•ãƒ©ã‚°åˆæœŸåŒ–
         GameClearFlg = false;
         GameOverFlg = false;
         ResultFlg = false;
         StaySpotArea = false;
 
-        fadeManager = GameObject.Find("FadeManager").GetComponent<FadeManager>();
-        stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
+        _fadeManager = GameObject.Find("FadeManager").GetComponent<FadeManager>();
+        _stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
     }
 
     public void GameClearFlgSet(bool val)
     {
-        // ƒQ[ƒ€ƒNƒŠƒAƒtƒ‰ƒO‚ğXV
+        // ã‚²ãƒ¼ãƒ ã‚¯ãƒªã‚¢ãƒ•ãƒ©ã‚°ã‚’æ›´æ–°
         GameClearFlg = val;
 
         if (GameClearFlg)
         {
-            // ŸƒV[ƒ“‚Ö
-            fadeManager.SceneName = "GameResult";
+            // æ¬¡ã‚·ãƒ¼ãƒ³ã¸
+            _fadeManager.SceneName = "GameResult";
 
-            // ResultManager‚Ö“n‚·
+            // ResultManagerã¸æ¸¡ã™
             ResultFlg = true;
 
-            // FadeOutŠJn‘Ò‹@ŠÔ
+            // FadeOuté–‹å§‹å¾…æ©Ÿæ™‚é–“
             Invoke("SetFedeFlg", 2.5f);
         }
     }
 
     public void GameOverFlgSet(bool val)
     {
-        // ƒQ[ƒ€ƒI[ƒo[ƒtƒ‰ƒO‚ğXV
+        // ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼ãƒ•ãƒ©ã‚°ã‚’æ›´æ–°
         GameOverFlg = val;
 
-        // ƒQ[ƒ€ƒI[ƒo[
+        // ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼
         if (GameOverFlg)
         {
-            // ŸƒV[ƒ“‚Ö
-            fadeManager.SceneName = "GameResult";
+            // æ¬¡ã‚·ãƒ¼ãƒ³ã¸
+            _fadeManager.SceneName = "GameResult";
 
-            // FadeOutŠJn‘Ò‹@ŠÔ
+            // FadeOuté–‹å§‹å¾…æ©Ÿæ™‚é–“
             Invoke("SetFedeFlg", 2.5f);
         }
     }
 
-    // UnityChan‚Ìƒ‚[ƒVƒ‡ƒ“Œã‚ÉƒtƒF[ƒh‚·‚é
+    // UnityChanã®ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³å¾Œã«ãƒ•ã‚§ãƒ¼ãƒ‰ã™ã‚‹
     void SetFedeFlg()
     {
-        fadeManager.FadeOutFlg = true;
+        _fadeManager.FadeOutFlg = true;
     }
 }

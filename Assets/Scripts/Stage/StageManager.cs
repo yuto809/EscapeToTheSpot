@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class StageManager : MonoBehaviour
@@ -13,31 +11,31 @@ public class StageManager : MonoBehaviour
         Level3
     }
 
-    // ƒXƒe[ƒW‚ÌƒXƒP[ƒ‹‰Šú’l
+    // ã‚¹ãƒ†ãƒ¼ã‚¸ã®ã‚¹ã‚±ãƒ¼ãƒ«åˆæœŸå€¤
     const float orgStageScaleX = 20.0f;
     const float orgStageScaleZ = 20.0f;
 
-    //ƒVƒ“ƒOƒ‹ƒgƒ“İ’è‚±‚±‚©‚ç
-    static public StageManager instance;
+    //ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³è¨­å®šã“ã“ã‹ã‚‰
+    static public StageManager Instance;
 
-    // ƒXƒe[ƒWƒŒƒxƒ‹
+    // ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ¬ãƒ™ãƒ«
     public int SelectStageLevel { set; get; }
 
-    // Œ»İ‚ÌƒXƒe[ƒW‚ÌƒXƒP[ƒ‹î•ñ(x•ûŒü)
-    // ‰Šú’l‚ÌƒXƒe[ƒWƒXƒP[ƒ‹î•ñ‚ğƒZƒbƒg
+    // ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ã‚¸ã®ã‚¹ã‚±ãƒ¼ãƒ«æƒ…å ±(xæ–¹å‘)
+    // åˆæœŸå€¤ã®ã‚¹ãƒ†ãƒ¼ã‚¸ã‚¹ã‚±ãƒ¼ãƒ«æƒ…å ±ã‚’ã‚»ãƒƒãƒˆ
     public float StageScale_x { set; get; }
 
-    // Œ»İ‚ÌƒXƒe[ƒW‚ÌƒXƒP[ƒ‹î•ñ(z•ûŒü)
+    // ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ã‚¸ã®ã‚¹ã‚±ãƒ¼ãƒ«æƒ…å ±(zæ–¹å‘)
     public float StageScale_z { set; get; }
 
     public bool UpdateStageScale { get; set; }
 
-    // ƒVƒ“ƒOƒ‹ƒgƒ“‚ÅScene‚ğŒ×‚¢‚Å‚àƒIƒuƒWƒFƒNƒg‚Íc‚·‚æ‚¤‚É‚·‚é
+    // ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã§Sceneã‚’è·¨ã„ã§ã‚‚ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯æ®‹ã™ã‚ˆã†ã«ã™ã‚‹
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
         else
@@ -51,7 +49,7 @@ public class StageManager : MonoBehaviour
         SetStageInfo();
     }
 
-    // ŠeƒŒƒxƒ‹‚É‰‚¶‚½ƒXƒe[ƒWî•ñ‚ğİ’è
+    // å„ãƒ¬ãƒ™ãƒ«ã«å¿œã˜ãŸã‚¹ãƒ†ãƒ¼ã‚¸æƒ…å ±ã‚’è¨­å®š
     public void SetStageInfo()
     {
         if (levelHard == SelectStageLevel)

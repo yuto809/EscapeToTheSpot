@@ -1,25 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class AudioManager : MonoBehaviour
 {
-    //ƒVƒ“ƒOƒ‹ƒgƒ“İ’è‚±‚±‚©‚ç
-    static public AudioManager instance;
+    //ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³è¨­å®šã“ã“ã‹ã‚‰
+    static public AudioManager Instance;
 
-    AudioSource [] BGM;
-    AudioSource clickSE;
-    AudioSource spotAreaSE;
+    private AudioSource[] _BGM;
+    private AudioSource _clickSE;
+    private AudioClip _audioBundle;
  
     public string CurrentSceneName { set; get; }
 
-    // ƒVƒ“ƒOƒ‹ƒgƒ“‚ÅScene‚ğŒ×‚¢‚Å‚àƒIƒuƒWƒFƒNƒg‚Íc‚·‚æ‚¤‚É‚·‚é
+    // ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã§Sceneã‚’è·¨ã„ã§ã‚‚ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯æ®‹ã™ã‚ˆã†ã«ã™ã‚‹
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
         else
@@ -30,20 +29,27 @@ public class AudioManager : MonoBehaviour
 
     void Start()
     {
-        // [0]‚ÍSE—p‚ÌƒI[ƒfƒBƒIƒNƒŠƒbƒv‚ğŠi”[‚·‚é
-        // [1]‚ÍTitle`StageSelect‚Ü‚Å‚ÌBGM
-        // [2]‚ÍPlay’†‚ÌBGM
-        BGM = GetComponents<AudioSource>();
+        // [0]ã¯SEç”¨ã®ã‚ªãƒ¼ãƒ‡ã‚£ã‚ªã‚¯ãƒªãƒƒãƒ—ã‚’æ ¼ç´ã™ã‚‹
+        // [1]ã¯Titleã€œStageSelectã¾ã§ã®BGM
+        // [2]ã¯Playä¸­ã®BGM
+        _BGM = GetComponents<AudioSource>();
         CurrentSceneName = SceneManager.GetActiveScene().name;
+
+        // AssetBundleãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒ­ãƒ¼ãƒ‰
+        // StreamingAssetsã‹ã‚‰ãƒ­ãƒ¼ãƒ‰
+        AssetBundle assetBundle = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, "audio"));
+
+        Debug.Log(Path.Combine(Application.streamingAssetsPath, "audio"));
+        //audioBundle = assetBundle.LoadAsset<AudioClip>("GhostChaser_Loop.wav");
     }
 
     private void ClickPlaySE(AudioClip audioClip)
     {
-        clickSE = GetComponent<AudioSource>();
-        clickSE.clip = audioClip;
-        clickSE.Play();
+        _clickSE = GetComponent<AudioSource>();
+        _clickSE.clip = audioClip;
+        _clickSE.Play();
     }
-    // ‘S•”1‚Â‚É‚Ü‚Æ‚ß‚ç‚ê‚é
+    // å…¨éƒ¨1ã¤ã«ã¾ã¨ã‚ã‚‰ã‚Œã‚‹
     public void playClickSE(AudioClip audioClip)
     {
         ClickPlaySE(audioClip);
@@ -74,30 +80,33 @@ public class AudioManager : MonoBehaviour
         ClickPlaySE(audioClip);
     }
 
-    // ƒV[ƒ“‚ªØ‚è‘Ö‚í‚Á‚½‚ÉŒÄ‚Î‚ê‚éƒƒ\ƒbƒh@
+    // ã‚·ãƒ¼ãƒ³ãŒåˆ‡ã‚Šæ›¿ã‚ã£ãŸæ™‚ã«å‘¼ã°ã‚Œã‚‹ãƒ¡ã‚½ãƒƒãƒ‰ã€€
     public void OnActiveSceneChanged(string nextSceneName)//(Scene nextScene)
     {
-        // ƒXƒe[ƒWƒZƒŒƒNƒg‰æ–Ê‚©‚çƒXƒe[ƒW‰æ–Ê‚É‘JˆÚ‚·‚é‚Æ‚«ABGM‚ğØ‚è‘Ö‚¦‚é
+        // ã‚¹ãƒ†ãƒ¼ã‚¸ã‚»ãƒ¬ã‚¯ãƒˆç”»é¢ã‹ã‚‰ã‚¹ãƒ†ãƒ¼ã‚¸ç”»é¢ã«é·ç§»ã™ã‚‹ã¨ãã€BGMã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
         if (CurrentSceneName == "StageSelect" && nextSceneName == "RunToTheSpot")
         {
-            BGM[1].Stop();
+            _BGM[1].Stop();
             Invoke("PlayModeBGM", 1.0f);
         }
     }
 
     void PlayModeBGM()
     {
-        BGM[2].Play();
+        //BGM[2].clip = audioBundle;
+        _BGM[2].Play();
+
+//        BGM[2].Play();
     }
 
     public void TitleBGM()
     {
-        BGM[2].Stop();
+        _BGM[2].Stop();
         Invoke("PlayTitleBGM", 1.0f);
     }
 
     private void PlayTitleBGM()
     {
-        BGM[1].Play();
+        _BGM[1].Play();
     }
 }

@@ -1,0 +1,18 @@
+ManifestFileVersion: 0
+CRC: 1085301853
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 4207a65dd3371bf3fd4287f49ca943c4
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 9a2ca7bdbd1871f7131daf57de908e0c
+HashAppended: 0
+ClassTypes:
+- Class: 83
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/BGM/TitleStage/SpaceGameBgm#1_Galaxy Blues_Loop.wav
+- Assets/BGM/PlayMode/GhostChaser_Loop.wav
+Dependencies: []

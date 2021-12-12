@@ -1,140 +1,138 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ResultManager : MonoBehaviour
 {
-    private GameManager gameManager;
-    private StageManager stageManager;
-    private FadeManager fadeManager;
-    private AudioManager audioManager;
+    private GameManager _gameManager;
+    private StageManager _stageManager;
+    private FadeManager _fadeManager;
+    private AudioManager _audioManager;
 
     [SerializeField]
-    private GameObject canvas; 
+    private GameObject _canvas; 
 
     [SerializeField]
-    private GameObject panel;
+    private GameObject _panel;
 
-    private Text resultText = null;
-    private Text []buttonTexts = null;
+    private Text _resultText = null;
+    private Text[] _buttonTexts = null;
 
     void Start()
     {
-        audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
-        fadeManager = GameObject.Find("FadeManager").GetComponent<FadeManager>();
+        _audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        _stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
+        _fadeManager = GameObject.Find("FadeManager").GetComponent<FadeManager>();
 
-        // Œ‹‰Ê•\¦
-        resultText = canvas.GetComponentInChildren<Text>();
+        // çµæœè¡¨ç¤º
+        _resultText = _canvas.GetComponentInChildren<Text>();
 
-        // ƒpƒlƒ‹ã‚Ìƒ{ƒ^ƒ“ƒeƒLƒXƒg
-        buttonTexts = panel.GetComponentsInChildren<Text>();
+        // ãƒ‘ãƒãƒ«ä¸Šã®ãƒœã‚¿ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ
+        _buttonTexts = _panel.GetComponentsInChildren<Text>();
         SetSelectButtonText();
     }
 
     private void SetSelectButtonText()
     {
-        buttonTexts[0].text = "Retry!!";
+        _buttonTexts[0].text = "Retry!!";
 
-        // ƒQ[ƒ€ƒNƒŠƒA‚Ìê‡
-        if (gameManager.ResultFlg)
+        // ã‚²ãƒ¼ãƒ ã‚¯ãƒªã‚¢ã®å ´åˆ
+        if (_gameManager.ResultFlg)
         {
-            resultText.text = "Game Clear !!";
+            _resultText.text = "Game Clear !!";
 
-            // ƒNƒŠƒA‚µ‚½ƒXƒe[ƒW‚ªHardˆÈŠO‚Ìê‡‚ÍNextStage‚Æ‚·‚é
-            if (stageManager.SelectStageLevel != 2)
+            // ã‚¯ãƒªã‚¢ã—ãŸã‚¹ãƒ†ãƒ¼ã‚¸ãŒHardä»¥å¤–ã®å ´åˆã¯NextStageã¨ã™ã‚‹
+            if (_stageManager.SelectStageLevel != 2)
             {
-                buttonTexts[1].text = "Next Stage";
+                _buttonTexts[1].text = "Next Stage";
             }
-            // ƒNƒŠƒA‚µ‚½ƒXƒe[ƒW‚ªHard‚È‚çI—¹(Top‚É–ß‚·)
+            // ã‚¯ãƒªã‚¢ã—ãŸã‚¹ãƒ†ãƒ¼ã‚¸ãŒHardãªã‚‰çµ‚äº†(Topã«æˆ»ã™)
             else
             {
-                resultText.text = "Thank you for playing !!";
-                buttonTexts[1].text = "Top";
+                _resultText.text = "Thank you for playing !!";
+                _buttonTexts[1].text = "Top";
             }
         }
-        // ƒQ[ƒ€ƒI[ƒo[‚Ìê‡
+        // ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼ã®å ´åˆ
         else
         {
-            resultText.text = "Game Over...";
-            buttonTexts[1].text = "Stage Select";
+            _resultText.text = "Game Over...";
+            _buttonTexts[1].text = "Stage Select";
         }
     }
 
     public void RetryButtonClicked()
     {
-        // Hard‚Ìê‡AƒXƒe[ƒW‚ğL‚°‚é‚½‚ßî•ñ‚ğÄİ’è‚·‚é
-        if (2 == stageManager.SelectStageLevel)
+        // Hardã®å ´åˆã€ã‚¹ãƒ†ãƒ¼ã‚¸ã‚’åºƒã’ã‚‹ãŸã‚æƒ…å ±ã‚’å†è¨­å®šã™ã‚‹
+        if (2 == _stageManager.SelectStageLevel)
         {
-            stageManager.SetStageInfo();
+            _stageManager.SetStageInfo();
         }
 
-        fadeManager.FadeOutFlg = true;
-        fadeManager.SceneName = "RunToTheSpot";        
-        gameManager.ResultFlg = false;
+        _fadeManager.FadeOutFlg = true;
+        _fadeManager.SceneName = "RunToTheSpot";
+        _gameManager.ResultFlg = false;
 
-        // g‚¢‚Ü‚í‚·
+        // ä½¿ã„ã¾ã‚ã™
         // Assets / Resources / SE / Title / PlayClick.wav
         AudioClip audio = Resources.Load("SE/Title/PlayClick") as AudioClip;
-        audioManager.playClickSE(audio);
+        _audioManager.playClickSE(audio);
 
-        gameManager.GameClearFlgSet(false);
-        gameManager.GameOverFlgSet(false);
-        gameManager.StaySpotArea = false;
+        _gameManager.GameClearFlgSet(false);
+        _gameManager.GameOverFlgSet(false);
+        _gameManager.StaySpotArea = false;
     }
 
     public void SelectButtonClicked()
     {
-        if (gameManager.ResultFlg)
+        if (_gameManager.ResultFlg)
         {
-            switch (stageManager.SelectStageLevel)
+            switch (_stageManager.SelectStageLevel)
             {
                 // Next Stage
                 case 0:
-                    fadeManager.SceneName = "RunToTheSpot";
-                    stageManager.SelectStageLevel += 1;
+                    _fadeManager.SceneName = "RunToTheSpot";
+                    _stageManager.SelectStageLevel += 1;
                     break;
                 // Next Stage
                 case 1:
-                    fadeManager.SceneName = "RunToTheSpot";
-                    stageManager.SelectStageLevel += 1;
+                    _fadeManager.SceneName = "RunToTheSpot";
+                    _stageManager.SelectStageLevel += 1;
                     break;
                 // Top
                 case 2:
-                    fadeManager.SceneName = "TitleScene";
+                    _fadeManager.SceneName = "TitleScene";
                     break;
                 default:
                     break;
             }
 
-            stageManager.SetStageInfo();
+            _stageManager.SetStageInfo();
         }
         else
         {
-            fadeManager.SceneName = "StageSelect";
+            _fadeManager.SceneName = "StageSelect";
         }
 
-        stageManager.SetStageInfo();
+        _stageManager.SetStageInfo();
 
-        fadeManager.FadeOutFlg = true;
-        gameManager.ResultFlg = false;
+        _fadeManager.FadeOutFlg = true;
+        _gameManager.ResultFlg = false;
 
-        gameManager.GameClearFlgSet(false);
-        gameManager.GameOverFlgSet(false);
-        gameManager.StaySpotArea = false;
+        _gameManager.GameClearFlgSet(false);
+        _gameManager.GameOverFlgSet(false);
+        _gameManager.StaySpotArea = false;
 
-        // g‚¢‚Ü‚í‚·
+        // ä½¿ã„ã¾ã‚ã™
         // Assets / Resources / SE / Title / PlayClick.wav
         AudioClip audio = Resources.Load("SE/Title/PlayClick") as AudioClip;
-        audioManager.playClickSE(audio);
+        _audioManager.playClickSE(audio);
 
-        // Title‚Ü‚½‚ÍƒXƒe[ƒW‘I‘ğ‰æ–Ê‚Ìê‡
-        if ("RunToTheSpot" != fadeManager.SceneName)
+        // Titleã¾ãŸã¯ã‚¹ãƒ†ãƒ¼ã‚¸é¸æŠç”»é¢ã®å ´åˆ
+        if ("RunToTheSpot" != _fadeManager.SceneName)
         {
-            // Title—p‚ÌBGM‚É•ÏX
-            audioManager.TitleBGM();
+            // Titleç”¨ã®BGMã«å¤‰æ›´
+            _audioManager.TitleBGM();
         }
     }
 }
