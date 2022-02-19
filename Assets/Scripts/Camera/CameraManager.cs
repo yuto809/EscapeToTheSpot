@@ -2,54 +2,48 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    const int levelHard = 2;
-    const float mainPosY = 8.0f;
-    const float mainPosZ = -15.0f;
-    const float mainPosYHard = 20.0f;
-    const float mainPosZHard = -32.0f;
-
-    // 他クラスからはいじらせない
-    [SerializeField]
-    private Camera _followCamera;
+    const float MAIN_POS_Y = 8.0f;
+    const float MAIN_POS_Z = -15.0f;
+    const float MAIN_POS_Y_HARD = 20.0f;
+    const float MAIN_POS_Z_HARD = -32.0f;
 
     [SerializeField]
-    private Camera _mainCamera;
+    private Camera _viewCamera;
 
     private StageManager _stageManager;
 
-    void Start()
+    private void Start()
     {
-        _stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
+        _stageManager = StageManager.Instance;
 
-        if (levelHard == _stageManager.SelectStageLevel)
+        if ((int)StageManager.StageLevel.HARD == _stageManager.SelectStageLevel)
         {
-            _mainCamera.transform.position = new Vector3(0.0f, mainPosYHard, mainPosZHard);
+            _viewCamera.transform.position = new Vector3(0.0f, MAIN_POS_Y_HARD, MAIN_POS_Z_HARD);
         }
         else
         {
-            _mainCamera.transform.position = new Vector3(0.0f, mainPosY, mainPosZ);
+            _viewCamera.transform.position = new Vector3(0.0f, MAIN_POS_Y, MAIN_POS_Z);
         }
 
-        // 最初は追従用カメラはOFFにする
-        _mainCamera.enabled = false;
+        // 最初はviewカメラはOFFにする
+        _viewCamera.enabled = false;
     }
 
     public void CameraChange()
     {
-        // 追従用カメラがOFFの場合
-        if (_mainCamera.enabled == false)
+        // ViewカメラがOFFの場合
+        if (_viewCamera.enabled == false)
         {
-            // 追従用カメラをON、メインカメラをOFF
-            _mainCamera.enabled = true;
+            // Viewカメラ起動
+            _viewCamera.enabled = true;
         }
         else
         {
-            // 追従用カメラをON、メインカメラをOFF
-            _mainCamera.enabled = false;
+            _viewCamera.enabled = false;
         }
     }
 
-    void Update()
+    private void Update()
     {
         //if (Input.GetButtonDown("Fire1"))
         //{

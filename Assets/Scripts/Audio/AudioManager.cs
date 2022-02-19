@@ -2,38 +2,63 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
 
-public class AudioManager : MonoBehaviour
+public class AudioManager : SingletonMonoBehaviour<AudioManager>
 {
-    //シングルトン設定ここから
-    static public AudioManager Instance;
+    public enum PlaySE
+    {
+        CLICK_EASY = 0,
+        CLICK_NORMAL,
+        CLICK_HARD,
+        CLICK_BACK,
+        CLICK_START,
+        DAMAGE_UNITYCHAN
+    }
+
+    public enum PlayBGM
+    {
+        BGM_TITLE_SCENE = 0,
+        BGM_PLAY_SCENE,
+    }
+
+    public enum PlayVoice
+    {
+        VOICE_DEAD = 0,
+        VOICE_CLEAR,
+        VOICE_FALL
+    }
 
     private AudioSource[] _BGM;
     private AudioSource _clickSE;
+    private AudioClip _titleSceneBGM;
+    private AudioClip _playModeBGM;
     private AudioClip _audioBundle;
  
-    public string CurrentSceneName { set; get; }
+    //public string CurrentSceneName { set; get; }
 
     // シングルトンでSceneを跨いでもオブジェクトは残すようにする
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(this.gameObject);
-        }
-        else
+        // インスタンスが見つからない場合は破棄
+        if (this != AudioManager.Instance)
         {
             Destroy(this.gameObject);
         }
+        else
+        {
+            DontDestroyOnLoad(this.gameObject);
+        }
     }
 
-    void Start()
+    private void Start()
     {
         // [0]はSE用のオーディオクリップを格納する
         // [1]はTitle〜StageSelectまでのBGM
         // [2]はPlay中のBGM
         _BGM = GetComponents<AudioSource>();
-        CurrentSceneName = SceneManager.GetActiveScene().name;
+
+        // BGMは容量が大きいため先にロードしておく
+        _titleSceneBGM = Resources.Load("BGM/TitleStage/SpaceGameBgm#1_Galaxy Blues_Loop") as AudioClip;
+        _playModeBGM = Resources.Load("BGM/PlayMode/GhostChaser_Loop") as AudioClip; ;
 
         // AssetBundleファイルをロード
         // StreamingAssetsからロード
@@ -43,70 +68,232 @@ public class AudioManager : MonoBehaviour
         //audioBundle = assetBundle.LoadAsset<AudioClip>("GhostChaser_Loop.wav");
     }
 
-    private void ClickPlaySE(AudioClip audioClip)
+
+    public void PlayMusicSE(int clickSE)
     {
+        // [0]をSEとして使用する
         _clickSE = GetComponent<AudioSource>();
-        _clickSE.clip = audioClip;
-        _clickSE.Play();
-    }
-    // 全部1つにまとめられる
-    public void playClickSE(AudioClip audioClip)
-    {
-        ClickPlaySE(audioClip);
-    }
+        _clickSE.clip = GetUseAudioClipSE(clickSE);
 
-    public void easyClickSE(AudioClip audioClip)
-    {
-        ClickPlaySE(audioClip);
-    }
-
-    public void normalClickSE(AudioClip audioClip)
-    {
-        ClickPlaySE(audioClip);
-    }
-
-    public void hardClickSE(AudioClip audioClip)
-    {
-        ClickPlaySE(audioClip);
-    }
-
-    public void backClickSE(AudioClip audioClip)
-    {
-        ClickPlaySE(audioClip);
-    }
-
-    public void DamageSE(AudioClip audioClip)
-    {
-        ClickPlaySE(audioClip);
-    }
-
-    // シーンが切り替わった時に呼ばれるメソッド　
-    public void OnActiveSceneChanged(string nextSceneName)//(Scene nextScene)
-    {
-        // ステージセレクト画面からステージ画面に遷移するとき、BGMを切り替える
-        if (CurrentSceneName == "StageSelect" && nextSceneName == "RunToTheSpot")
+        if (_clickSE.clip != null)
         {
-            _BGM[1].Stop();
-            Invoke("PlayModeBGM", 1.0f);
+            _clickSE.Play();
+        }
+        // 流すSEに問題がある場合は停止する
+        else
+        {
+            _clickSE.Stop();
         }
     }
 
-    void PlayModeBGM()
+    private AudioClip GetUseAudioClipSE(int clickSE)
     {
-        //BGM[2].clip = audioBundle;
-        _BGM[2].Play();
+        AudioClip retClip = null;
 
-//        BGM[2].Play();
+        switch(clickSE)
+        {
+            case (int)PlaySE.CLICK_EASY:
+                retClip = Resources.Load("SE/StageSelect/EasyClick") as AudioClip;
+                break;
+            case (int)PlaySE.CLICK_NORMAL:
+                retClip = Resources.Load("SE/StageSelect/NormalClick") as AudioClip;
+                break;
+            case (int)PlaySE.CLICK_HARD:
+                retClip = Resources.Load("SE/StageSelect/HardClick") as AudioClip;
+                break;
+            case (int)PlaySE.CLICK_BACK:
+                retClip = Resources.Load("SE/StageSelect/BackClick") as AudioClip;
+                break;
+            case (int)PlaySE.DAMAGE_UNITYCHAN:
+                retClip = Resources.Load("SE/Damage/Damage") as AudioClip;
+                break;
+            case (int)PlaySE.CLICK_START:
+                retClip = Resources.Load("SE/Title/PlayClick") as AudioClip;
+                break;
+            default:
+                retClip = null;
+                break;
+        }
+
+
+        return retClip;
     }
 
-    public void TitleBGM()
+    //private void ClickPlaySE(AudioClip audioClip)
+    //{
+    //    _clickSE = GetComponent<AudioSource>();
+    //    _clickSE.clip = audioClip;
+    //    _clickSE.Play();
+    //}
+
+
+    //// 全部1つにまとめられる
+    //public void PlayClickSE(AudioClip audioClip)
+    //{
+    //    ClickPlaySE(audioClip);
+    //}
+
+
+    //// stage
+    //public void EasyClickSE(AudioClip audioClip)
+    //{
+    //    ClickPlaySE(audioClip);
+    //}
+
+    //// stage
+    //public void NormalClickSE(AudioClip audioClip)
+    //{
+    //    ClickPlaySE(audioClip);
+    //}
+    //// stage
+    //public void HardClickSE(AudioClip audioClip)
+    //{
+    //    ClickPlaySE(audioClip);
+    //}
+    //// stage
+    //public void BackClickSE(AudioClip audioClip)
+    //{
+    //    ClickPlaySE(audioClip);
+    //}
+    //public void DamageSE(AudioClip audioClip)
+    //{
+    //    ClickPlaySE(audioClip);
+    //}
+
+    //    // シーンが切り替わった時に呼ばれるメソッド　
+    //    public void OnActiveSceneChanged(string nextSceneName)//(Scene nextScene)
+    //    {
+    //        // ステージセレクト画面からステージ画面に遷移するとき、BGMを切り替える
+    //        if (CurrentSceneName == "StageSelect" && nextSceneName == "RunToTheSpot")
+    //        {
+    //            _BGM[1].Stop();
+    //            Invoke("PlayModeBGM", 1.0f);
+    //        }
+    //    }
+
+    //    private void PlayModeBGM()
+    //    {
+    //        //BGM[2].clip = audioBundle;
+    //        _BGM[2].Play();
+
+    ////        BGM[2].Play();
+    //    }
+
+
+
+
+
+
+    public void PlayMusicBGM(int playBGM)
     {
-        _BGM[2].Stop();
-        Invoke("PlayTitleBGM", 1.0f);
+        // [1]をゲームBGMとして使用する
+        //_BGM = GetComponents<AudioSource>();
+
+        // 流すBGMが決まるまでは停止する
+        _BGM[1].Stop();
+        _BGM[1].clip = GetUseAudioClipBGM(playBGM);
+
+        if (_BGM[1].clip != null)
+        {
+            Debug.Log("PlayMUSIC");
+            Invoke("StartBGM", 1.0f);
+        }
+        // 流すSEに問題がある場合は停止する
+        else
+        {
+            _BGM[1].Stop();
+        }
+
     }
 
-    private void PlayTitleBGM()
+    private AudioClip GetUseAudioClipBGM(int playBGM)
+    {
+        AudioClip retClip = null;
+
+        switch (playBGM)
+        {
+            case (int)PlayBGM.BGM_TITLE_SCENE:
+                retClip = _titleSceneBGM;
+                break;
+            case (int)PlayBGM.BGM_PLAY_SCENE:
+                retClip = _playModeBGM;
+                break;
+            default:
+                retClip = null;
+                break;
+        }
+
+        return retClip;
+    }
+
+    private void StartBGM()
     {
         _BGM[1].Play();
     }
+
+
+    public void PlayMusicVoice(int playVoice)
+    {
+        // [2]をUnityChanのボイスとして使用する
+
+        // 流すBGMが決まるまでは停止する
+        _BGM[2].Stop();
+        _BGM[2].clip = GetUseAudioClipVoice(playVoice);
+
+        if (_BGM[2].clip != null)
+        {
+            _BGM[2].Play();
+        }
+        // 流すSEに問題がある場合は停止する
+        else
+        {
+            _BGM[2].Stop();
+        }
+
+    }
+
+    private AudioClip GetUseAudioClipVoice(int playVoice)
+    {
+        AudioClip retClip = null;
+
+        switch (playVoice)
+        {
+            case (int)PlayVoice.VOICE_DEAD:
+                retClip = Resources.Load("SE/Damage/damage_uni1520") as AudioClip;
+                break;
+            case (int)PlayVoice.VOICE_CLEAR:
+                retClip = Resources.Load("SE/Clear/Clear_uni1518") as AudioClip;
+                break;
+            case (int)PlayVoice.VOICE_FALL:
+                retClip = Resources.Load("SE/Damage/fall_uni1519") as AudioClip;
+                break;
+            default:
+                retClip = null;
+                break;
+        }
+
+        return retClip;
+    }
+
+    //public void PlayBGM()
+    //{
+    //    _BGM[1].Stop();
+    //    Invoke("PlayModeBGM", 1.0f);
+    //}
+
+    //private void PlayModeBGM()
+    //{
+    //    _BGM[2].Play();
+    //}
+
+    //public void TitleBGM()
+    //{
+    //    _BGM[2].Stop();
+    //    Invoke("PlayTitleBGM", 1.0f);
+    //}
+
+    //private void PlayTitleBGM()
+    //{
+    //    _BGM[1].Play();
+    //}
 }

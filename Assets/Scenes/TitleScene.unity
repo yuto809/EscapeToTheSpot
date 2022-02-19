@@ -123,11 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &653759661 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7879339900042937299, guid: b9b6e475733d0314f9781699939b54e1, type: 3}
-  m_PrefabInstance: {fileID: 6775261272555965201}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &822277217
 GameObject:
   m_ObjectHideFlags: 0
@@ -172,9 +167,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 024db6b93197ea74c94bc40e93dacf83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeSpeed: 3
-  fadeTime: 3
-  fade: {fileID: 653759661}
+  _fadeSpeed: 0
+  _fadeTime: 3
+  _fade: {fileID: 0}
 --- !u!1 &850293434
 GameObject:
   m_ObjectHideFlags: 0
@@ -1018,11 +1013,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 27a36dc82ff32054d88d76929bcd1079, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -1111,7 +1106,7 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1735763700}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
@@ -7471,9 +7466,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05290e240b3dc004b968b50c9029639f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 2
-  runSpeed: 3
-  jumpSpeed: 4
+  _walkSpeed: 2
+  _runSpeed: 4
+  _jumpSpeed: 2
 --- !u!143 &171690868766556431
 CharacterController:
   m_ObjectHideFlags: 0

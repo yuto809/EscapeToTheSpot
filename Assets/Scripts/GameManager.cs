@@ -1,89 +1,184 @@
 using UnityEngine;
+using UnityEngine.Events;
 
-public class GameManager : MonoBehaviour
+public class GameManager : SingletonMonoBehaviour<GameManager>
 {
-    //シングルトン設定ここから
-    static public GameManager Instance;
-
-    // UnityChanがSpotAreaに留まっているフラグ
+    const float FADE_TIME = 2.5f;
+    /// <summary>
+    /// UnityChanがSpotAreaに留まっているフラグ
+    /// </summary>
     public bool StaySpotArea { set; get; }
 
-    // UnityChanが経過時間内SpotAreaにいたかの判断フラグ
-    public bool GameClearFlg { set; get; }
+    /// <summary>
+    /// UnityChanが経過時間内SpotAreaにいたかの判断フラグ
+    /// </summary>
+    public bool GameClearFlg
+    {
+        get
+        {
+            return _gameClearFlg;
+        }
+    }
 
-    public bool GameOverFlg { set; get; }
+    /// <summary>
+    /// UnityChanが敵と接触、ステージ場外に落ちたときの判断フラグ
+    /// </summary>
+    public bool GameOverFlg
+    {
+        get
+        {
+            return _gameOverFlg;
+        }
+    }
 
-    public bool ResultFlg { set; get; }
-    
-    [SerializeField]
-    private ObstacleGenerator _objGen;
+    /// <summary>
+    /// リザルト画面で文字を表示する際の判断フラグ
+    /// </summary>
+    //public bool ResultFlg
+    //{
+    //    get
+    //    {
+    //        return _resultFlg;
+    //    }
+    //}
 
+    //public bool ResultFlg
+    //{
+    //    get; set;
+    //}
+
+    private bool _gameOverFlg;
+    private bool _gameClearFlg;
+    private bool _resultFlg;
     private FadeManager _fadeManager;
     private StageManager _stageManager;
+
+    private UnityEvent _gameOverFlgEvent = new UnityEvent();
+    private UnityEvent _gameClearFlgEvent = new UnityEvent();
 
     // シングルトンでSceneを跨いでもオブジェクトは残すようにする
     private void Awake()
     {
-        if (Instance == null)
+        _fadeManager = FadeManager.Instance;
+        _fadeManager.SetFadeOutFlgEvent();
+
+        // インスタンスが見つからない場合は破棄
+        if (this != GameManager.Instance)
         {
-            Instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            //Debug.Log("Destroy");
+            Destroy(this.gameObject);
         }
         else
         {
-            Destroy(this.gameObject);
+            //Debug.Log("DontDestroyOnLoad");
+            DontDestroyOnLoad(this.gameObject);
         }
     }
 
-    void Start()
+    private void Start()
     {
         // ゴールフラグ初期化
-        GameClearFlg = false;
-        GameOverFlg = false;
-        ResultFlg = false;
+        _gameClearFlg = false;
+        _gameOverFlg = false;
+        _resultFlg = false;
+
         StaySpotArea = false;
 
-        _fadeManager = GameObject.Find("FadeManager").GetComponent<FadeManager>();
-        _stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
+        _stageManager = StageManager.Instance;
     }
 
-    public void GameClearFlgSet(bool val)
+    // GameOverFlgイベント関連処理
+    public void SetGameOverFlgEvent()
     {
+        _gameOverFlgEvent.AddListener(SetGameOverFlg);
+    }
+    // GameOverFlgイベント関連処理
+    public void CallGameOverFlgEvent()
+    {
+        _gameOverFlgEvent.Invoke();
+    }
+    // GameOverFlgイベント関連処理
+    public void RemoveGameOverFlgEvent()
+    {
+        _gameOverFlgEvent.RemoveListener(SetGameOverFlg);
+    }
+
+    // GameClearFlgイベント関連処理
+    public void SetGameClearFlgEvent()
+    {
+        _gameClearFlgEvent.AddListener(SetGameClearFlg);
+    }
+    // GameClearFlgイベント関連処理
+    public void CallGameClearFlgEvent()
+    {
+        _gameClearFlgEvent.Invoke();
+    }
+    // GameClearFlgイベント関連処理
+    public void RemoveGameClearFlgEvent()
+    {
+        _gameClearFlgEvent.RemoveListener(SetGameClearFlg);
+    }
+
+    private void SetGameClearFlg()
+    {
+        //Debug.Log("SetGameClearFlg before : " + _gameClearFlg);
+
         // ゲームクリアフラグを更新
-        GameClearFlg = val;
+        if (_gameClearFlg)
+        {
+            _gameClearFlg = false;
+        }
+        else
+        {
+            _gameClearFlg = true;
+        }
+
 
         if (GameClearFlg)
         {
             // 次シーンへ
-            _fadeManager.SceneName = "GameResult";
-
-            // ResultManagerへ渡す
-            ResultFlg = true;
+            //_fadeManager.SceneName = "GameResult";
 
             // FadeOut開始待機時間
-            Invoke("SetFedeFlg", 2.5f);
+            Invoke("SetFedeFlg", FADE_TIME);
         }
+
+        //Debug.Log("SetGameClearFlg after : " + _gameClearFlg);
     }
 
-    public void GameOverFlgSet(bool val)
+    private void SetGameOverFlg()
     {
+        //Debug.Log("SetGameOverFlg before : " + _gameOverFlg);
+
         // ゲームオーバーフラグを更新
-        GameOverFlg = val;
+        if (_gameOverFlg)
+        {
+            _gameOverFlg = false;
+        }
+        else
+        {
+            _gameOverFlg = true;
+        }
 
         // ゲームオーバー
         if (GameOverFlg)
         {
             // 次シーンへ
-            _fadeManager.SceneName = "GameResult";
+            //_fadeManager.SceneName = "GameResult";
 
             // FadeOut開始待機時間
-            Invoke("SetFedeFlg", 2.5f);
+            Invoke("SetFedeFlg", FADE_TIME);
         }
+
+        //Debug.Log("SetGameOverFlg after : " + _gameOverFlg);
     }
 
     // UnityChanのモーション後にフェードする
-    void SetFedeFlg()
+    private void SetFedeFlg()
     {
-        _fadeManager.FadeOutFlg = true;
+        // 指定したシーンへフェードアウトする
+        _fadeManager.CallFadeOutFlgEvent((int)FadeManager.NextScene.SCENE_GAME_RESULT);
+        //Debug.Log("SetFadeFlg GameManager.cs");
     }
 }
+

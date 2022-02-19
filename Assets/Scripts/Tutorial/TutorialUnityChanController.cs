@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class UnityChanController : MonoBehaviour
+public class TutorialUnityChanController : MonoBehaviour
 {
     private GameManager _gameManager;
     private AudioManager _audioManager;
+    private TutorialManager _tutorialManager;
     private CharacterController _characterController;
     private UnityEvent _setGameOverFlgEvent;
 
@@ -39,6 +40,8 @@ public class UnityChanController : MonoBehaviour
     
     private void Start()
     {
+        // TutorialManager取得
+        _tutorialManager = GameObject.Find("TutorialManager").GetComponent<TutorialManager>();
         _gameManager = GameManager.Instance;
         _audioManager = AudioManager.Instance;
         _characterController = GetComponent<CharacterController>();
@@ -128,10 +131,6 @@ public class UnityChanController : MonoBehaviour
             // ゆにぃいい・・・(負け)
             //_unitySE[0].Play();
             _audioManager.PlayMusicVoice((int)AudioManager.PlayVoice.VOICE_DEAD);
-            // GameMangerにイベント発行して、GameManger側でフラグ状態を更新する
-            //_setGameOverFlgEvent = new UnityEvent();
-            //_setGameOverFlgEvent.Invoke(); // イベント発行
-            //_gameManager.GameOverFlgSet(true);
             _gameManager.CallGameOverFlgEvent();
         }
     }
@@ -155,6 +154,7 @@ public class UnityChanController : MonoBehaviour
     }
 
     // 入力された方向に座標を変更する
+    // 速度を変更するやり方で移動
     public void ToUp()
     {
         if (_upDirection)
@@ -191,7 +191,6 @@ public class UnityChanController : MonoBehaviour
     {
         // unityChanが死んだ、もしくはゲームクリアの場合
         if (_deadFlg || _successFlg)
-        //if ((true == _deadFlg) || (true == _successFlg))
         {
             _animator.SetFloat("Speed", 0f);
             return;
@@ -219,25 +218,11 @@ public class UnityChanController : MonoBehaviour
                 // ワールド座標を見て向きを変えている
                 transform.rotation = Quaternion.LookRotation(_input);
 
-                // 現在の位置に入力した方向を足して、その方向を向かせる
-                //transform.LookAt(transform.position + input.normalized);
-
                 // アニメータ起動
                 _animator.SetFloat("Speed", _input.magnitude);
 
                 if (_input.magnitude > 0.5f)
                 {
-                    // ★
-                    // FPSとかに向いているやり方
-                    // ベクトルをローカル座標からグローバル座標へ変換
-                    // ワールド座標を入れたとしても、システム側はローカル座標と認識する
-                    // TransformDirectionは自分のローカル座標をワールド座標として扱う
-                    //float mX = Input.GetAxis("Mouse X");      //マウスの左右移動量(-1.0~1.0)
-                    //input = transform.TransformDirection(input);
-                    //gameObject.transform.Rotate(new Vector3(0, 30.0f * mX, 0));
-
-                    // transform.forwardはオブジェクトが向いている方向のベクトル(z軸)
-                    // 速度はどの向きにどれぐらい動くか (velocity += transform.forward * runSpeed;)でも可能
                     _velocity += _input * _runSpeed;
                 }
                 else
@@ -251,21 +236,41 @@ public class UnityChanController : MonoBehaviour
             }
         }
 
-        // ジャンプ機能はなしにする
-        //if (Input.GetButtonDown("Jump"))
-        //{
-        //    velocity.y = jumpSpeed;
-        //    animator.SetTrigger("Jump");
-        //}
-
         // CharactorControllerは重力を考慮する必要がある
         _velocity.y += Physics.gravity.y * Time.deltaTime;
-        _characterController.Move(_velocity * Time.deltaTime);
+
+        //// 移動チュートリアルが完了したら操作は受け付けないようにする
+        //if (_tutorialManager.GetTutorialTaskCompStatus(((int)TutorialManager.TutorialTitle.TUTORIAL_MOVEMENT)))
+        //{
+        //    //Debug.Log("チュートリアル中　　移動");
+        //}
+        //else
+        //{
+        //    _characterController.Move(_velocity * Time.deltaTime);
+        //}
+
+        // 移動チュートリアルが完了したら操作は受け付けないようにする
+        if (_tutorialManager.GetCurrentTutorialStatus == (int)TutorialManager.TutorialTitle.TUTORIAL_MOVEMENT)
+        {
+            if ((_tutorialManager.GetTutorialTaskCompStatus(((int)TutorialManager.TutorialTitle.TUTORIAL_MOVEMENT))))
+            {
+
+                //Debug.Log("チュートリアル中　　移動");
+            }
+            else
+            {
+                _characterController.Move(_velocity * Time.deltaTime);
+            }
+        }
+        else if (_tutorialManager.GetCurrentTutorialStatus == (int)TutorialManager.TutorialTitle.TUTORIAL_GAME_CLEAR)
+        {
+            _characterController.Move(_velocity * Time.deltaTime);
+        }
+        else
+        {
+            _characterController.Move(_velocity * Time.deltaTime);
+        }
+
     }
 
-    //private void OnDisable()
-    //{
-    //    Debug.Log("OnDisable UnityChanController.cs");
-    //    _gameManager.RemoveGameOberFlgEvent();
-    //}
 }

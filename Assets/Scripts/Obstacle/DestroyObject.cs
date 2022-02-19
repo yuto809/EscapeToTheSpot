@@ -1,18 +1,35 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DestroyObject : MonoBehaviour
 {
     const float DESTROY_AREA = 30.0f;
 
+    private AudioManager _audioManager;
     private GameManager _gameManager;
     private StageManager _stageManager;
     private AudioSource _unityFall;
     private BoxCollider _boxCollider;
 
+    // Inspector‘¤‚ÅGameManager‚ğƒAƒ^ƒbƒ`‚·‚é‚ÆAƒV[ƒ“Ä“Ç‚İ‚İ‚É
+    // DontDestroyLoadƒIƒuƒWƒFƒNƒg‘¤‚ÉGameManager‚ªì‚ç‚ê‚é‚½‚ß
+    // Inspector‘¤‚Å‚ÌƒCƒxƒ“ƒg“o˜^‚Í•s‰Â
+    //[SerializeField]
+    //private UnityEvent _setGameOverFlgEvent = new UnityEvent();
+
+    private UnityEvent _setGameOverFlgEventBuckUp;
+
+
+    private void Awake()
+    {
+        _gameManager = GameManager.Instance;
+        _gameManager.SetGameOverFlgEvent();
+    }
+
     private void Start()
     {
-        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        _stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
+        _audioManager = AudioManager.Instance;
+        _stageManager = StageManager.Instance;
         _boxCollider = GetComponent<BoxCollider>();
         _unityFall = GetComponent<AudioSource>();
 
@@ -21,8 +38,7 @@ public class DestroyObject : MonoBehaviour
 
     private void SetDestroyArea()
     {
-        // Hardã®å ´åˆ
-        if (2 == _stageManager.SelectStageLevel)
+        if (_stageManager.SelectStageLevel == (int)StageManager.StageLevel.HARD)
         {
             _boxCollider.size = new Vector3(DESTROY_AREA * 2, 1.0f, DESTROY_AREA * 2);
         }
@@ -34,10 +50,19 @@ public class DestroyObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "unityChan")
+        if (other.CompareTag("unityChan"))
         {
-            _gameManager.GameOverFlgSet(true);
-            _unityFall.Play();
+            // GameManger‚ÉƒCƒxƒ“ƒg”­s‚µ‚ÄAGameManger‘¤‚Åƒtƒ‰ƒOó‘Ô‚ğXV‚·‚é
+            //if (_setGameOverFlgEvent == null)
+            //{
+            //    Debug.Log("Event Null");
+            //    _setGameOverFlgEvent = new UnityEvent();
+            //}
+
+            //Debug.Log("Event");
+            _gameManager.CallGameOverFlgEvent();
+            _audioManager.PlayMusicVoice((int)AudioManager.PlayVoice.VOICE_FALL);
+
         }
 
         Destroy(other.gameObject);

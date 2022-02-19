@@ -14,15 +14,15 @@ public class EnemySphere : MonoBehaviour
     private Rigidbody _rigid;
     private GameManager _gameManager;
     private GameObject _enemy;
-    void Start()
+    private void Start()
     {
         _enemySpeed = _speed;// Random.Range(1, speed);
         _rigid = GetComponent<Rigidbody>();
-        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        _gameManager = GameManager.Instance;
     }
-    
+
     // FixedUpdateは一定秒数ごとに呼ばれる
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (_target == null)
         {

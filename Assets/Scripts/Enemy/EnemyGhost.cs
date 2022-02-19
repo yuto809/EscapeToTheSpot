@@ -25,17 +25,17 @@ public class EnemyGhost : MonoBehaviour
 
     private Vector3 _vector3;
 
-    void Start()
+    private void Start()
     {
         // コンポーネントの取得を行う
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
-        _myAgent = GetComponent<NavMeshAgent>();
-        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        _gameManager = GameManager.Instance;
     }
 
-    void Update()
+    private void Update()
     {
+        // unityChanがステージ外に落ちた場合は、停止する
         if (_unityChan == null)
         {
             _velocity = Vector3.zero;
@@ -80,8 +80,7 @@ public class EnemyGhost : MonoBehaviour
                 }
             }
         }
-
-        //myAgent.SetDestination(unityChan.transform.position);
+        
         // Physics.gravity.yはプロジェクト設定より-9.81
         _velocity.y += Physics.gravity.y * Time.deltaTime;
         _characterController.Move(_velocity * Time.deltaTime);

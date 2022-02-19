@@ -545,6 +545,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _canvas: {fileID: 797328214}
   _panel: {fileID: 364952578}
+  _retryButton: {fileID: 17536852}
+  _SelectButton: {fileID: 1642990414}
+  _textRetry: Retry !
+  _textTop: Top
+  _textNextStage: Next Stage
+  _textSelectStage: Stage Select
+  _textGameClear: Game Clear !!
+  _textGameOver: Game Over...
+  _textGameEnd: Thank you for playing !!
 --- !u!1 &797328214
 GameObject:
   m_ObjectHideFlags: 0

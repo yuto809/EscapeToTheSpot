@@ -6,21 +6,31 @@ public class TitleController : MonoBehaviour
     private AudioManager _audioManager;
     private FadeManager _fadeManager;
 
+    private void Awake()
+    {
+        _fadeManager = FadeManager.Instance;
+        _fadeManager.SetFadeOutFlgEvent();
+    }
+
     private void Start()
     {
-        _audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
-        _audioManager.CurrentSceneName = SceneManager.GetActiveScene().name;
-
-        _fadeManager = GameObject.Find("FadeManager").GetComponent<FadeManager>();
+        _audioManager = AudioManager.Instance;
     }
 
     public void OnStartButtonClicked()
     {
-        _fadeManager.FadeOutFlg = true;
-        _fadeManager.SceneName = "StageSelect";
+        _fadeManager.CallFadeOutFlgEvent((int)FadeManager.NextScene.SCENE_STAGE_SELECT);
+        //_fadeManager.SceneName = "StageSelect";
 
         // Assets / Resources / SE / Title / PlayClick.wav
-        AudioClip audio = Resources.Load("SE/Title/PlayClick") as AudioClip;
-        _audioManager.playClickSE(audio);
+        //AudioClip audio = Resources.Load("SE/Title/PlayClick") as AudioClip;
+        //_audioManager.PlayClickSE(audio);
+        _audioManager.PlayMusicSE((int)AudioManager.PlaySE.CLICK_START);
+    }
+
+    private void OnDisable()
+    {
+        _fadeManager.RemoveFadeOutFlgEvent();
+        Debug.Log("OnDisable TitleController.cs");
     }
 }

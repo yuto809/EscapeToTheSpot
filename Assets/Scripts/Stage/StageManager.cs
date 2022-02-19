@@ -1,46 +1,41 @@
 using UnityEngine;
 
-public class StageManager : MonoBehaviour
+public class StageManager : SingletonMonoBehaviour<StageManager>
 {
-    const int levelHard = 2;
-
     public enum StageLevel
     {
-        Level1 = 0,
-        Level2,
-        Level3
+        EASY = 0,
+        NORMAL,
+        HARD
     }
 
     // ステージのスケール初期値
     const float orgStageScaleX = 20.0f;
     const float orgStageScaleZ = 20.0f;
 
-    //シングルトン設定ここから
-    static public StageManager Instance;
-
     // ステージレベル
     public int SelectStageLevel { set; get; }
 
     // 現在のステージのスケール情報(x方向)
     // 初期値のステージスケール情報をセット
-    public float StageScale_x { set; get; }
+    public float StageScaleX { set; get; }
 
     // 現在のステージのスケール情報(z方向)
-    public float StageScale_z { set; get; }
+    public float StageScaleZ { set; get; }
 
     public bool UpdateStageScale { get; set; }
 
     // シングルトンでSceneを跨いでもオブジェクトは残すようにする
     private void Awake()
     {
-        if (Instance == null)
+        // インスタンスが見つからない場合は破棄
+        if (this != StageManager.Instance)
         {
-            Instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            Destroy(this.gameObject);
         }
         else
         {
-            Destroy(this.gameObject);
+            DontDestroyOnLoad(this.gameObject);
         }
     }
 
@@ -52,16 +47,16 @@ public class StageManager : MonoBehaviour
     // 各レベルに応じたステージ情報を設定
     public void SetStageInfo()
     {
-        if (levelHard == SelectStageLevel)
+        if ((int)StageManager.StageLevel.HARD == SelectStageLevel)
         {
             Debug.Log("Select Hard");
-            StageScale_x = orgStageScaleX * 2;
-            StageScale_z = orgStageScaleZ * 2;
+            StageScaleX = orgStageScaleX * 2;
+            StageScaleZ = orgStageScaleZ * 2;
         }
         else
         {
-            StageScale_x = orgStageScaleX;
-            StageScale_z = orgStageScaleZ;
+            StageScaleX = orgStageScaleX;
+            StageScaleZ = orgStageScaleZ;
         }
 
         UpdateStageScale = true;

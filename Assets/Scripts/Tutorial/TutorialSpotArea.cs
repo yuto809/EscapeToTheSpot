@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class SpotArea : MonoBehaviour
+public class TutorialSpotArea : MonoBehaviour
 {
     const int COUNT_CLEARTIME = 3;
     const float SPOT_ANGLE = 12.0f;
@@ -12,6 +12,7 @@ public class SpotArea : MonoBehaviour
     [SerializeField]
     private UnityChanController _unityChan;
 
+    private TutorialManager _tutorialManager;
     private int counter;
     private Coroutine _timerCoroutine;
     private GameManager _gameManager;
@@ -36,11 +37,11 @@ public class SpotArea : MonoBehaviour
 
     private void Start()
     {
-        // GameManagerインスタンス取得
-        //_gameManager = GameManager.Instance;
+        _tutorialManager = TutorialManager.instance;
+        //_tutorialManager = GameObject.Find("TutorialManager").GetComponent<TutorialManager>();
         _stageManager = StageManager.Instance;
         _spotSE = GetComponents<AudioSource>();
-
+        
         // SpotCreatorインスタンス取得
         _spotCreator = GameObject.Find("SpotLight").GetComponent<SpotCreator>();
         _spotLight = _spotCreator.GetComponent<Light>();
@@ -63,7 +64,6 @@ public class SpotArea : MonoBehaviour
             {
                 StopCoroutine(_timerCoroutine);
                 _spotSE[0].Stop();
-                //_gameManager.GameOverFlgSet(false);
             }
         }
 
@@ -75,12 +75,6 @@ public class SpotArea : MonoBehaviour
         {
             _spotSE[0].Stop();
             _spotSE[1].Play();
-
-            // GameManagerにクリア報告を渡す
-            // SendMessageは複数オブジェクトで同じスクリプトを使用している場合に役立つ
-
-
-            //_gameManager.GameClearFlgSet(true);
             _gameManager.CallGameClearFlgEvent();
             
             _unityChan.unitySuccess();
@@ -101,19 +95,23 @@ public class SpotArea : MonoBehaviour
             _spotLight.color = new Color(1.0f, 0.0f, 0.0f, _alpha);
         }
 
+
         // 経過時間ごとにスポットエリアをある程度まで(現状は1としている)縮めていく
-        if (1 < _spotLight.spotAngle)
+        if (!_tutorialManager.GetTutorialTaskCompStatus(((int)TutorialManager.TutorialTitle.TUTORIAL_GAME_CLEAR)))
         {
-            if (false == _gameManager.GameClearFlg)
+            if (1 < _spotLight.spotAngle)
             {
-                // 角度を少しずつ小さくする
-                _spotLight.spotAngle -= Time.deltaTime * 2.0f;
+                if (false == _gameManager.GameClearFlg)
+                {
+                    // 角度を少しずつ小さくする
+                    _spotLight.spotAngle -= Time.deltaTime * 2.0f;
+                }
             }
-        }
-        else
-        {
-            // スポットエリアを作り直す
-            _spotCreator.ReCreateSpotArea();
+            else
+            {
+                // スポットエリアを作り直す
+                _spotCreator.ReCreateSpotArea();
+            }
         }
     }
 

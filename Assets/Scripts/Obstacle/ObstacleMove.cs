@@ -5,12 +5,12 @@ public class ObstacleMove : MonoBehaviour
     private Rigidbody _rb;
     private float _speed = 30f;
 
-    void Start()
+    private void Start()
     {
         _rb = GetComponent<Rigidbody>();        
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         // 一定の速度を超えたら処理しない
         if (_rb.velocity.magnitude < 20)

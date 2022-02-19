@@ -5,18 +5,29 @@ public class Logo : MonoBehaviour
     private FadeManager _fadeManager;
 
     [SerializeField]
-    private float _logoTime;
+    private float _logoTime = 1.5f;
 
-    void Start()
+    private void Awake()
     {
-        _fadeManager = GameObject.Find("FadeManager").GetComponent<FadeManager>();
+        _fadeManager = FadeManager.Instance;
+        _fadeManager.SetFadeOutFlgEvent();
+    }
+
+    private void Start()
+    {
         Invoke("Next", _logoTime);
     }
 
-    void Next()
+    private void Next()
     {
-        _fadeManager.FadeOutFlg = true;
-        _fadeManager.SceneName = "TitleScene";
-//        SceneManager.LoadScene("TitleScene");
+        _fadeManager.CallFadeOutFlgEvent((int)FadeManager.NextScene.SCENE_TITLE);
+        //_fadeManager.SceneName = "TitleScene";
+    }
+
+
+    private void OnDisable()
+    {
+        _fadeManager.RemoveFadeOutFlgEvent();
+        //Debug.Log("OnDisable logo.cs");
     }
 }

@@ -14,14 +14,14 @@ public class FollowPlayer : MonoBehaviour
     private Vector3 targetDiff;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         // UnityChanと追従用のカメラとの距離を算出
         targetDiff = _unityChan.transform.position - transform.position;
     }
 
     // Update関数後のフレーム更新処理
-    void LateUpdate()
+    private void LateUpdate()
     {
         if (_unityChan != null)
         {
