@@ -45,21 +45,6 @@ public class CameraManager : MonoBehaviour
 
     private void Update()
     {
-        //if (Input.GetButtonDown("Fire1"))
-        //{
-        //    // 追従用カメラがOFFの場合
-        //    if (mainCamera.enabled == false)
-        //    {
-        //        // 追従用カメラをON、メインカメラをOFF
-        //        mainCamera.enabled = true;
-        //        followCamera.enabled = false;
-        //    }
-        //    else
-        //    {
-        //        // 追従用カメラをON、メインカメラをOFF
-        //        mainCamera.enabled = false;
-        //        followCamera.enabled = true;
-        //    }
-        //}
+
     }
 }

@@ -11,9 +11,9 @@ public class DestroyObject : MonoBehaviour
     private AudioSource _unityFall;
     private BoxCollider _boxCollider;
 
-    // Inspector側でGameManagerをアタッチすると、シーン再読み込み時に
-    // DontDestroyLoadオブジェクト側にGameManagerが作られるため
-    // Inspector側でのイベント登録は不可
+    // Inspector蛛ｴ縺ｧGameManager繧偵い繧ｿ繝�繝√☆繧九→縲√す繝ｼ繝ｳ蜀崎ｪｭ縺ｿ霎ｼ縺ｿ譎ゅ↓
+    // DontDestroyLoad繧ｪ繝悶ず繧ｧ繧ｯ繝亥�ｴ縺ｫGameManager縺御ｽ懊ｉ繧後ｋ縺溘ａ
+    // Inspector蛛ｴ縺ｧ縺ｮ繧､繝吶Φ繝育匳骭ｲ縺ｯ荳榊庄
     //[SerializeField]
     //private UnityEvent _setGameOverFlgEvent = new UnityEvent();
 
@@ -52,14 +52,6 @@ public class DestroyObject : MonoBehaviour
     {
         if (other.CompareTag("unityChan"))
         {
-            // GameMangerにイベント発行して、GameManger側でフラグ状態を更新する
-            //if (_setGameOverFlgEvent == null)
-            //{
-            //    Debug.Log("Event Null");
-            //    _setGameOverFlgEvent = new UnityEvent();
-            //}
-
-            //Debug.Log("Event");
             _gameManager.CallGameOverFlgEvent();
             _audioManager.PlayMusicVoice((int)AudioManager.PlayVoice.VOICE_FALL);
 

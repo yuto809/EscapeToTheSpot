@@ -45,40 +45,6 @@ public class SpotCreator : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        //Ray ray = new Ray(transform.position, Vector3.down);
-
-        //RaycastHit hit;
-        //if (Physics.Raycast(ray, out hit)) // もしRayを投射して何らかのコライダーに衝突したら
-        //{
-        //    string name = hit.collider.gameObject.name; // 衝突した相手オブジェクトの名前を取得
-        //}
-
-        // SPOT_ANGLEを基準に、ゲームクリア判定が可能となる色(デフォルトの黄色)を表示する
-        //if (_spotLight.spotAngle > SPOT_ANGLE)
-        //{
-        //    _spotLight.color = new Color(_red, _green, _blue, _alpha);
-        //}
-        //else
-        //{
-        //    // 赤色は、ゲームクリア判定不可とする
-        //    _spotLight.color = new Color(1.0f, 0.0f, 0.0f, _alpha);
-        //}
-
-        //// 経過時間ごとにスポットエリアをある程度まで(現状は1としている)縮めていく
-        //if (1 < _spotLight.spotAngle)
-        //{
-        //    if (false == _gameManager.GameClearFlg)
-        //    {
-        //        // 角度を少しずつ小さくする
-        //        _spotLight.spotAngle -= Time.deltaTime * 2.0f;
-        //    }
-        //}
-        //else
-        //{
-        //    // スポットエリアを作り直す
-        //    _spotLight.spotAngle = 1;
-        //    ReCreateSpotArea();
-        //}
     }
 
     /// <summary>

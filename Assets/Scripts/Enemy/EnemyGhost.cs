@@ -92,7 +92,7 @@ public class EnemyGhost : MonoBehaviour
         {
             if (false == _gameManager.GameClearFlg)
             {
-                _unityChanController.unityDead();
+                _unityChanController.UnityDead();
             }
 
             Destroy(this.gameObject);

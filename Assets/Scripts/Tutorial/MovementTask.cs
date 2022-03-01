@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,9 +9,9 @@ public class MovementTask : ITutorialTask
         TRIGGER_MESSAGE_2,
     }
 
-    // Unitychan‚Ì‰ŠúˆÊ’u(X:0, Y:0.5, Z:-5)
+    // Unitychanã®åˆæœŸä½ç½®(X:0, Y:0.5, Z:-5)
 
-    // “Á’è‹——£ˆÚ“®‚µ‚½‚©‚Ç‚¤‚©”»’f’è”(”÷’²®•K—v)
+    // ç‰¹å®šè·é›¢ç§»å‹•ã—ãŸã‹ã©ã†ã‹åˆ¤æ–­å®šæ•°(å¾®èª¿æ•´å¿…è¦)
     const float MOVE_POS_UP = -3.5f;
     const float MOVE_POS_RIGHT = 1.5f;
     const float MOVE_POS_DOWN = -7.0f;
@@ -43,7 +42,7 @@ public class MovementTask : ITutorialTask
 
     public void OnTaskSetting()
     {
-        // TutorialManageræ“¾
+        // TutorialManagerå–å¾—
         //_tutorialManager = GameObject.Find("TutorialManager").GetComponent<TutorialManager>();
         _tutorialManager = TutorialManager.instance;
         _unityChan = GameObject.Find("TutorialUnityChan").GetComponent<TutorialUnityChanController>();
@@ -57,17 +56,17 @@ public class MovementTask : ITutorialTask
         _isCalled = false;
 
         // 0origin
-        textMessages.Add("‚Ü‚¸‚ÍAƒLƒƒƒ‰ƒNƒ^[‚ÌˆÚ“®•û–@‚Å‚·B");
-        textMessages.Add("WSADƒL[A‚Ü‚½‚ÍƒJ[ƒ\ƒ‹ƒL[‚Åã‰º¶‰E‚ÉˆÚ“®‚Å‚«‚Ü‚·B");
-        textMessages.Add("‚Å‚ÍAÀÛ‚ÉƒLƒƒƒ‰ƒNƒ^[‚ğˆÚ“®‚³‚¹‚Ä‚İ‚Ü‚µ‚å‚¤B");
-        textMessages.Add("–â‘è‚È‚¢‚Å‚·‚ËB‚»‚ê‚Å‚ÍAŸ‚Ì‘€ìà–¾‚Å‚·B");
+        textMessages.Add("ã¾ãšã¯ã€ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ç§»å‹•æ–¹æ³•ã§ã™ã€‚");
+        textMessages.Add("WSADã‚­ãƒ¼ã€ã¾ãŸã¯ã‚«ãƒ¼ã‚½ãƒ«ã‚­ãƒ¼ã§ä¸Šä¸‹å·¦å³ã«ç§»å‹•ã§ãã¾ã™ã€‚");
+        textMessages.Add("ã§ã¯ã€å®Ÿéš›ã«ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’ç§»å‹•ã•ã›ã¦ã¿ã¾ã—ã‚‡ã†ã€‚");
+        textMessages.Add("å•é¡Œãªã„ã§ã™ã­ã€‚ãã‚Œã§ã¯ã€æ¬¡ã®æ“ä½œèª¬æ˜ã§ã™ã€‚");
 
         _textSentence = new string[]
         {
-            "‚Ü‚¸‚ÍAƒLƒƒƒ‰ƒNƒ^[‚ÌˆÚ“®•û–@‚Å‚·B",
-            "WSADƒL[A‚Ü‚½‚ÍƒJ[ƒ\ƒ‹ƒL[‚Åã‰º¶‰E‚ÉˆÚ“®‚Å‚«‚Ü‚·B",
-            "‚Å‚ÍAÀÛ‚ÉƒLƒƒƒ‰ƒNƒ^[‚ğˆÚ“®‚³‚¹‚Ä‚İ‚Ü‚µ‚å‚¤B",
-            "–â‘è‚È‚¢‚Å‚·‚ËB‚»‚ê‚Å‚ÍAŸ‚Ì‘€ìà–¾‚Å‚·B",
+            "ã¾ãšã¯ã€ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ç§»å‹•æ–¹æ³•ã§ã™ã€‚",
+            "WSADã‚­ãƒ¼ã€ã¾ãŸã¯ã‚«ãƒ¼ã‚½ãƒ«ã‚­ãƒ¼ã§ä¸Šä¸‹å·¦å³ã«ç§»å‹•ã§ãã¾ã™ã€‚",
+            "ã§ã¯ã€å®Ÿéš›ã«ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’ç§»å‹•ã•ã›ã¦ã¿ã¾ã—ã‚‡ã†ã€‚",
+            "å•é¡Œãªã„ã§ã™ã­ã€‚ãã‚Œã§ã¯ã€æ¬¡ã®æ“ä½œèª¬æ˜ã§ã™ã€‚",
         };
 
         _currentSentenceNumber = _textSentence.Length;
@@ -77,7 +76,7 @@ public class MovementTask : ITutorialTask
         _currentSenetnce = "";
 
         _tutorialAllComplete = false;
-        // ƒCƒxƒ“ƒg“o˜^
+        // ã‚¤ãƒ™ãƒ³ãƒˆç™»éŒ²
         _tutorialManager.SetPanelEnabledChangeFlgEvent();
     }
 
@@ -94,139 +93,68 @@ public class MovementTask : ITutorialTask
         }
         else
         {
-            return _currentSenetnce; // textMessages[textIndex];
+            return _currentSenetnce;
         }
     }
 
-    // TutorialManger‚ÌUpdateˆ—
+    // TutorialMangerã®Updateå‡¦ç†
     public bool CheckTask()
     {
-        // ƒpƒlƒ‹‚ÌƒtƒF[ƒhˆ—’†‚ÍŠm”Fˆ—‚ÍƒXƒLƒbƒv‚·‚é
-        //if (_tutorialManager.ActiveFadePanelFlg)
-        //{
-        //    //Debug.Log("SKIPPPPPPPPPPPP");
-        //    return false;
-        //}
-
-        // Œ»İ•\¦‚³‚ê‚é‚×‚«ƒƒbƒZ[ƒW“à—e‚ª‚·‚×‚Ä•\¦‚Å‚«‚½‚©”»’f
-        //if (CheckSentence() && !_showMessageComplete)
-        //{
-        //    // Š®—¹ƒtƒ‰ƒO‚ğİ’è
-        //    _showMessageComplete = true;
-        //}
-
-        // Œ»İ•\¦‚³‚ê‚é‚×‚«ƒƒbƒZ[ƒW“à—e‚ª‚·‚×‚Ä•\¦‚³‚ê‚Ä‚¢‚È‚¢ê‡
+        // ç¾åœ¨è¡¨ç¤ºã•ã‚Œã‚‹ã¹ããƒ¡ãƒƒã‚»ãƒ¼ã‚¸å†…å®¹ãŒã™ã¹ã¦è¡¨ç¤ºã•ã‚Œã¦ã„ãªã„å ´åˆ
         if (!_showMessageComplete)
         {
 
             if (CheckSentence())
             {
                 //Debug.Log(_textSentence[_currentSenetenceIndex][_currentCharIndex]);
-                // Š®—¹ƒtƒ‰ƒO‚ğİ’è
+                // å®Œäº†ãƒ•ãƒ©ã‚°ã‚’è¨­å®š
                 _showMessageComplete = true;
             }
             else
             {
-                // •\¦‚³‚ê‚éƒƒbƒZ[ƒW‚ğ1•¶š‚¸‚Âæ“¾‚µ‚Äİ’è‚·‚é
+                // è¡¨ç¤ºã•ã‚Œã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’1æ–‡å­—ãšã¤å–å¾—ã—ã¦è¨­å®šã™ã‚‹
                 _currentSenetnce = _currentSenetnce + _textSentence[_currentSenetenceIndex][_currentCharIndex];
 
-                // Ÿ‚Ì1•¶š‚Ö
+                // æ¬¡ã®1æ–‡å­—ã¸
                 _currentCharIndex++;
 
             }
 
-            //Debug.Log(_currentSenetnce);
-            //Debug.Log(_currentSenetnce.Length);
-            //Debug.Log(_textSentence.Length);
-
-            // “Á’èƒƒbƒZ[ƒW‚ğ“Ç‚İ‚ñ‚¾‚çAƒtƒH[ƒJƒX‰ğœ‚·‚éƒCƒxƒ“ƒg‚ğTutorial‘¤‚É“`‚¦‚é
+            // ç‰¹å®šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’èª­ã¿è¾¼ã‚“ã ã‚‰ã€ãƒ•ã‚©ãƒ¼ã‚«ã‚¹è§£é™¤ã™ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆã‚’Tutorialå´ã«ä¼ãˆã‚‹
             if (!_isCalled && _currentSenetenceIndex == (int)TriggerMessage.TRIGGER_MESSAGE_1)
             {
                 _tutorialManager.CallPanelEnabledChangeFlgEvent();
                 _isCalled = true;
-                Debug.Log("CallPanelEnabledChangeFlgEvent");
             }
         }
-        // Œ»İ•\¦‚³‚ê‚é‚×‚«ƒƒbƒZ[ƒW“à—e‚ª‚·‚×‚Ä•\¦‚Å‚«‚Ä‚¢‚éê‡
+        // ç¾åœ¨è¡¨ç¤ºã•ã‚Œã‚‹ã¹ããƒ¡ãƒƒã‚»ãƒ¼ã‚¸å†…å®¹ãŒã™ã¹ã¦è¡¨ç¤ºã§ãã¦ã„ã‚‹å ´åˆ
         else
         {
             if (_currentSenetenceIndex == (int)TriggerMessage.TRIGGER_MESSAGE_2)
             {
-                // –‘O‚ÉŒˆ‚ß‚ç‚ê‚½‹——£•ªˆÚ“®‚µ‚½‚çˆÚ“®ƒ`ƒ…[ƒgƒŠƒAƒ‹‚ÍI—¹‚Æ”»’f‚·‚é
+                // äº‹å‰ã«æ±ºã‚ã‚‰ã‚ŒãŸè·é›¢åˆ†ç§»å‹•ã—ãŸã‚‰ç§»å‹•ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã¯çµ‚äº†ã¨åˆ¤æ–­ã™ã‚‹
                 if (CheckTutorialMove())
                 {
-                    // ƒƒbƒZ[ƒW‚ğ‰Šú‰»‚µ‚ÄAŸ‚ÌƒƒbƒZ[ƒW“à—e‚Ö
+                    // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’åˆæœŸåŒ–ã—ã¦ã€æ¬¡ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å†…å®¹ã¸
                     SetNextSentenceInfo();
                 }
             }
-            else if (Input.GetMouseButtonDown(0))// (Input.touchCount == 1) tap‘€ì
+            else if (Input.GetMouseButtonDown(0))// (Input.touchCount == 1) tapæ“ä½œ
             {
-                // Œ»İ‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹‚Å‚·‚×‚Ä‚ÌƒƒbƒZ[ƒW‚ª•\¦o—ˆ‚½‚çƒ`ƒ…[ƒgƒŠƒAƒ‹I—¹
+                // ç¾åœ¨ã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã§ã™ã¹ã¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒè¡¨ç¤ºå‡ºæ¥ãŸã‚‰ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«çµ‚äº†
                 if (_tutorialAllComplete)//_currentSenetenceIndex == _currentSenetnce.Length)
                 {
-                    //Debug.Log("ZXXXXXXXX");
-                    // ƒCƒxƒ“ƒgíœ
+                    // ã‚¤ãƒ™ãƒ³ãƒˆå‰Šé™¤
                     _tutorialManager.RemovePanelEnabledChangeFlgEvent();
                     return true;
                 }
                 else
                 {
-                    // ƒƒbƒZ[ƒW‚ğ‰Šú‰»‚µ‚ÄAŸ‚ÌƒƒbƒZ[ƒW“à—e‚Ö
+                    // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’åˆæœŸåŒ–ã—ã¦ã€æ¬¡ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å†…å®¹ã¸
                     SetNextSentenceInfo();
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-        ///////////////////////////////////////////// old
-
-
-        //// –‘O‚É—pˆÓ‚µ‚Ä‚¢‚éƒeƒLƒXƒgƒƒbƒZ[ƒW‚ğ‚·‚×‚Ä•\¦Š‚Â
-        //// –‘O‚ÉŒˆ‚ß‚ç‚ê‚½‹——£•ªˆÚ“®‚µ‚½‚çˆÚ“®ƒ`ƒ…[ƒgƒŠƒAƒ‹‚ÍI—¹‚Æ”»’f‚·‚é
-        //// textMessage.Count‚ÍŒ»ó‚Í4ŒÅ’è(ƒƒbƒZ[ƒW”)
-        //if (CheckTutorialMove() && (textIndex >= (textMessages.Count))) //!_tutorialManager.CursolPanelEnabledFlg)
-        //{
-        //    // ƒ`ƒ…[ƒgƒŠƒAƒ‹Š®—¹Œã‚Í3
-        //    textIndex++;
-        //    //Debug.Log(textIndex);
-        //    // ƒCƒxƒ“ƒgíœ
-        //    _tutorialManager.RemovePanelEnabledChangeFlgEvent();
-        //    return true;
-        //}
-
-        //// ’†O‚ÆƒŠƒAƒ‹Š®—¹Œã‚Éindex‚ªXV‚³‚ê‚È‚¢‚©‚çƒƒbƒZ[ƒW‚ª“Ç‚İ‚Ü‚ê‚È‚¢
-
-        //// ˆÚ“®ƒ`ƒ…[ƒgƒŠƒAƒ‹‚ğ‚µ‚Ä‚¢‚éê‡‚Íˆ—‚µ‚È‚¢
-        //if (Input.GetMouseButtonDown(0) && textIndex != 2)// (Input.touchCount == 1) tap‘€ì
-        //{
-        //    textIndex++;
-        //    //Debug.Log(textIndex);
-        //}
-
-        //// “Á’èƒƒbƒZ[ƒW‚ğ“Ç‚İ‚ñ‚¾‚çAƒtƒH[ƒJƒX‰ğœ‚·‚éƒCƒxƒ“ƒg‚ğTutorial‘¤‚É“`‚¦‚é
-        //// ˆÚ“®ƒ`ƒ…[ƒgƒŠƒAƒ‹‚©‚ç‚¾‚Æ‚í‚©‚é‚æ‚¤‚ÉA—ñ‹“Œ^‚Æ‚©‚ÅŠÇ—‚·‚éH
-        //else if (!_isCalled && textIndex == 1)
-        //{
-        //    _tutorialManager.CallPanelEnabledChangeFlgEvent();
-        //    _isCalled = true;
-        //    Debug.Log("CallPanelEnabledChangeFlgEvent");
-        //    //textIndex++;
-        //}
-
-
-
-        //Debug.Log(_unityChan.transform.position.x);
-        //Debug.Log(_unityChan.transform.position.z);
-
 
         return false;
     }
@@ -241,12 +169,12 @@ public class MovementTask : ITutorialTask
         return _tutorialMovementComplete;
     }
 
-    // ˆÚ“®‹——£‚Ì‡Œv’l‚É‚·‚é
+    // ç§»å‹•è·é›¢ã®åˆè¨ˆå€¤ã«ã™ã‚‹
 
-    // –‘O‚ÉŒˆ‚ß‚ç‚ê‚½‹——£•ªˆÚ“®‚µ‚½‚çˆÚ“®ƒ`ƒ…[ƒgƒŠƒAƒ‹‚ÍI—¹‚Æ”»’f‚·‚é
+    // äº‹å‰ã«æ±ºã‚ã‚‰ã‚ŒãŸè·é›¢åˆ†ç§»å‹•ã—ãŸã‚‰ç§»å‹•ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã¯çµ‚äº†ã¨åˆ¤æ–­ã™ã‚‹
     private bool CheckTutorialMove()
     {
-        //Debug.Log("ˆÚ“®Check");
+        //Debug.Log("ç§»å‹•Check");
         if (_unityChan.transform.position.x > MOVE_POS_RIGHT)
         {
             _moveRightFlg = true;
@@ -267,15 +195,15 @@ public class MovementTask : ITutorialTask
             _moveDownFlg = true;
         }
 
-        // ˆÚ“®‘€ì‚ªŠ®—¹‚µ‚½‚©‚Ç‚¤‚©H
+        // ç§»å‹•æ“ä½œãŒå®Œäº†ã—ãŸã‹ã©ã†ã‹ï¼Ÿ
         if ((_moveUpFlg & _moveRightFlg & _moveDownFlg & _moveLeftFlg))
         {
-            Debug.Log("ˆÚ“®ƒ`ƒ…[ƒgƒŠƒAƒ‹Š®—¹");
+            Debug.Log("ç§»å‹•ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«å®Œäº†");
 
             //textIndex++;
 
             _tutorialMovementComplete = true;
-            // Ÿ‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹Às‚Ü‚Åƒpƒlƒ‹‚ğ—LŒø‚É–ß‚·‚©H
+            // æ¬¡ã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«å®Ÿè¡Œã¾ã§ãƒ‘ãƒãƒ«ã‚’æœ‰åŠ¹ã«æˆ»ã™ã‹ï¼Ÿ
             return true;
         }
 
@@ -284,18 +212,18 @@ public class MovementTask : ITutorialTask
 
     private bool CheckSentence()
     {
-        // ‚·‚×‚Ä‚ÌƒƒbƒZ[ƒW‚ğ•\¦‚µ‚Ä‚¢‚éê‡‚Íˆ—‚ğƒXƒLƒbƒv
+        // ã™ã¹ã¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤ºã—ã¦ã„ã‚‹å ´åˆã¯å‡¦ç†ã‚’ã‚¹ã‚­ãƒƒãƒ—
         if (_currentSenetenceIndex >= _textSentence.Length)
         {
             Debug.Log("move tutorial complete set");
             _tutorialAllComplete = true;
-            // SetNextSentenceInfo‚É‚æ‚Á‚ÄƒƒbƒZ[ƒW‚ª‰Šú‰»‚³‚ê‚Ä‚¢‚é‚½‚ß
-            // ÅŒã‚Ì•¶Í‚ğİ’è
+            // SetNextSentenceInfoã«ã‚ˆã£ã¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒåˆæœŸåŒ–ã•ã‚Œã¦ã„ã‚‹ãŸã‚
+            // æœ€å¾Œã®æ–‡ç« ã‚’è¨­å®š
             _currentSenetnce = _textSentence[_currentSenetenceIndex - 1];
             return true;
         }
 
-        // •¶š‚ğ‚·‚×‚Ä•\¦‚·‚é‚±‚Æ‚ª‚Å‚«‚½‚çI—¹
+        // æ–‡å­—ã‚’ã™ã¹ã¦è¡¨ç¤ºã™ã‚‹ã“ã¨ãŒã§ããŸã‚‰çµ‚äº†
         if (_currentSenetnce.Length == _textSentence[_currentSenetenceIndex].Length)
         {
             return true;

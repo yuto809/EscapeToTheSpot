@@ -9,9 +9,7 @@ public class StageUpdate : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        //_stage = GameObject.Find("Stage");
         _stageManager = StageManager.Instance;
-        //_stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
     }
 
     // Update is called once per frame

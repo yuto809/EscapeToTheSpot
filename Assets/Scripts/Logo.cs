@@ -21,13 +21,11 @@ public class Logo : MonoBehaviour
     private void Next()
     {
         _fadeManager.CallFadeOutFlgEvent((int)FadeManager.NextScene.SCENE_TITLE);
-        //_fadeManager.SceneName = "TitleScene";
     }
 
 
     private void OnDisable()
     {
         _fadeManager.RemoveFadeOutFlgEvent();
-        //Debug.Log("OnDisable logo.cs");
     }
 }

@@ -10,13 +10,21 @@ public class TutorialSpotArea : MonoBehaviour
     private string _targetTag;
 
     [SerializeField]
-    private UnityChanController _unityChan;
+    private TutorialUnityChanController _unityChan;
+
+    public bool GetJudgeClearFlg
+    {
+        get
+        {
+            return _clearFlg;
+        }
+    }
 
     private TutorialManager _tutorialManager;
     private int counter;
     private Coroutine _timerCoroutine;
     private GameManager _gameManager;
-    private SpotCreator _spotCreator;
+    private TutorialSpotCreator _spotCreator;
     private Light _spotLight;
     private AudioSource[] _spotSE;
     private StageManager _stageManager;
@@ -38,12 +46,11 @@ public class TutorialSpotArea : MonoBehaviour
     private void Start()
     {
         _tutorialManager = TutorialManager.instance;
-        //_tutorialManager = GameObject.Find("TutorialManager").GetComponent<TutorialManager>();
         _stageManager = StageManager.Instance;
         _spotSE = GetComponents<AudioSource>();
         
         // SpotCreatorインスタンス取得
-        _spotCreator = GameObject.Find("SpotLight").GetComponent<SpotCreator>();
+        _spotCreator = GameObject.Find("TutorialSpotLight").GetComponent<TutorialSpotCreator>();
         _spotLight = _spotCreator.GetComponent<Light>();
 
         _red = _spotLight.color.r;
@@ -75,9 +82,14 @@ public class TutorialSpotArea : MonoBehaviour
         {
             _spotSE[0].Stop();
             _spotSE[1].Play();
+
+            // イベントコール・削除の関係でTutorialの場合はTutorialManagerで処理する
             _gameManager.CallGameClearFlgEvent();
-            
-            _unityChan.unitySuccess();
+
+            // GameClearTaskでする
+            _unityChan.UnitySuccess();
+
+            // GameClearTaskで1度拾ってOFFにする
             _clearFlg = false;
         }
     }
@@ -120,7 +132,6 @@ public class TutorialSpotArea : MonoBehaviour
         // ゲームオーバーの場合はクリア判断処理は実行させない
         if (_gameManager.GameOverFlg)
         {
-            //gameOverFlg = true;
             // コルーチンが生きている場合
             if (null != _timerCoroutine)
             {
@@ -152,11 +163,6 @@ public class TutorialSpotArea : MonoBehaviour
             // クリア判断を行う
             if (other.CompareTag(_targetTag))
             {
-                if (_stageManager.SelectStageLevel == (int)StageManager.StageLevel.HARD)
-                {
-                    _gameManager.StaySpotArea = true;
-                }
-
                 _timerCoroutine = StartCoroutine(TimeCount());
                 _spotSE[0].Play();
                 _judgeClearOnce = true;
@@ -178,8 +184,9 @@ public class TutorialSpotArea : MonoBehaviour
             // エリア内に留まっているときのSEを止める
             _spotSE[0].Stop();
             _gameManager.StaySpotArea = false;
+
+            // チュートリアルでは1度だけ判断したいためコメントアウト
             _judgeClearOnce = false;
-            _clearFlg = false;
         }
     }
 
@@ -195,5 +202,12 @@ public class TutorialSpotArea : MonoBehaviour
         }
 
         _clearFlg = true;
+    }
+
+    // 最初に非活性にしているからAwakeでセットしてもすぐに解除してしまっている・・・
+    // Awakeで登録したイベントを削除する
+    private void OnDisable()
+    {
+        // Debug.Log("TutorialSpotArea Remove");
     }
 }

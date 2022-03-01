@@ -6,7 +6,8 @@ public class StageManager : SingletonMonoBehaviour<StageManager>
     {
         EASY = 0,
         NORMAL,
-        HARD
+        HARD,
+        TUTORIAL,
     }
 
     // ステージのスケール初期値
@@ -49,7 +50,6 @@ public class StageManager : SingletonMonoBehaviour<StageManager>
     {
         if ((int)StageManager.StageLevel.HARD == SelectStageLevel)
         {
-            Debug.Log("Select Hard");
             StageScaleX = orgStageScaleX * 2;
             StageScaleZ = orgStageScaleZ * 2;
         }

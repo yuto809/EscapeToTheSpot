@@ -73,19 +73,6 @@ public class ObstacleGenerator : MonoBehaviour
         }
         else
         {
-            //Debug.Log(_objList.Count);
-
-            // 前方からの障害物が1つでも存在する場合
-            //if (0 != _objList.Count)
-            //{
-            //    // Listに格納したオブジェクトはすべて削除
-            //    // クリア後に障害物に当たってゲームオーバーとなるのを防ぐため
-            //    foreach (GameObject gameObj in _objList)
-            //    {
-            //        Destroy(gameObj);
-            //    }
-            //}
-
             // Listに格納したオブジェクトはすべて削除
             // クリア後に障害物に当たってゲームオーバーとなるのを防ぐため
             foreach (GameObject gameObj in _objList)
@@ -151,18 +138,8 @@ public class ObstacleGenerator : MonoBehaviour
     // 現在のステージのスケール情報を基に、障害物の生成場所を決める
     private Vector3 GetRandomPosition(int index)
     {
-        //// 障害物を生成するための範囲を取得
-        //obsRange_X = (stageManager.StageScale_x / 2) - obsPosOffset;
-        //obsRange_Z = (stageManager.StageScale_z / 2) - obsPosOffset;
-
-        // 障害物の座標を決める
-  //      _obstacles[index].transform.position = new Vector3(Random.Range((-1) * _obsRangeX, _obsRangeX),
-  //                                                        obstaclDropHight,
-  //                                                        Random.Range((-1) * _obsRangeZ, _obsRangeZ));
-
         return new Vector3(Random.Range((-1) * _obsRangeX, _obsRangeX),
                                         OBSTACLE_DROP_HIGHT,
                                         Random.Range((-1) * _obsRangeZ, _obsRangeZ));
-  //      return _obstacles[index].transform.position;
     }
 }

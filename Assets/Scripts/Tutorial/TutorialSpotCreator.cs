@@ -27,7 +27,7 @@ public class TutorialSpotCreator : MonoBehaviour
         _stageManager = StageManager.Instance;
 
         // Lightのコンポーネント取得
-        _spotLight = GameObject.Find("SpotLight").GetComponent<Light>();
+        _spotLight = GameObject.Find("TutorialSpotLight").GetComponent<Light>();
         _orgSpotLightAngle = _spotLight.spotAngle;
 
         _red = _spotLight.color.r;

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
@@ -31,22 +32,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
     }
 
-    /// <summary>
-    /// リザルト画面で文字を表示する際の判断フラグ
-    /// </summary>
-    //public bool ResultFlg
-    //{
-    //    get
-    //    {
-    //        return _resultFlg;
-    //    }
-    //}
-
-    //public bool ResultFlg
-    //{
-    //    get; set;
-    //}
-
     private bool _gameOverFlg;
     private bool _gameClearFlg;
     private bool _resultFlg;
@@ -65,12 +50,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         // インスタンスが見つからない場合は破棄
         if (this != GameManager.Instance)
         {
-            //Debug.Log("Destroy");
             Destroy(this.gameObject);
         }
         else
         {
-            //Debug.Log("DontDestroyOnLoad");
             DontDestroyOnLoad(this.gameObject);
         }
     }
@@ -121,8 +104,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     private void SetGameClearFlg()
     {
-        //Debug.Log("SetGameClearFlg before : " + _gameClearFlg);
-
         // ゲームクリアフラグを更新
         if (_gameClearFlg)
         {
@@ -133,23 +114,21 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             _gameClearFlg = true;
         }
 
+        // チュートリアル中はスキップ
+        if (SceneManager.GetActiveScene().name == "Tutorial")
+        {
+            return;
+        }
 
         if (GameClearFlg)
         {
-            // 次シーンへ
-            //_fadeManager.SceneName = "GameResult";
-
             // FadeOut開始待機時間
             Invoke("SetFedeFlg", FADE_TIME);
         }
-
-        //Debug.Log("SetGameClearFlg after : " + _gameClearFlg);
     }
 
     private void SetGameOverFlg()
     {
-        //Debug.Log("SetGameOverFlg before : " + _gameOverFlg);
-
         // ゲームオーバーフラグを更新
         if (_gameOverFlg)
         {
@@ -160,17 +139,18 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             _gameOverFlg = true;
         }
 
+        // チュートリアル中はスキップ
+        if (SceneManager.GetActiveScene().name == "Tutorial")
+        {
+            return;
+        }
+
         // ゲームオーバー
         if (GameOverFlg)
         {
-            // 次シーンへ
-            //_fadeManager.SceneName = "GameResult";
-
             // FadeOut開始待機時間
             Invoke("SetFedeFlg", FADE_TIME);
         }
-
-        //Debug.Log("SetGameOverFlg after : " + _gameOverFlg);
     }
 
     // UnityChanのモーション後にフェードする
@@ -178,7 +158,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     {
         // 指定したシーンへフェードアウトする
         _fadeManager.CallFadeOutFlgEvent((int)FadeManager.NextScene.SCENE_GAME_RESULT);
-        //Debug.Log("SetFadeFlg GameManager.cs");
     }
 }
 

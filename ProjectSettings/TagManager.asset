@@ -10,6 +10,7 @@ TagManager:
   - enemy
   - obstacle
   - fade
+  - tutorialUnityChan
   layers:
   - Default
   - TransparentFX

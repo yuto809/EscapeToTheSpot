@@ -6,18 +6,20 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 
 /// <summary>
-/// ƒQ[ƒ€ã‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹‚ğŠÇ—‚·‚éƒ}ƒl[ƒWƒƒƒNƒ‰ƒX
+/// ã‚²ãƒ¼ãƒ ä¸Šã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã‚’ç®¡ç†ã™ã‚‹ãƒãƒãƒ¼ã‚¸ãƒ£ã‚¯ãƒ©ã‚¹
 /// </summary>
 public class TutorialManager : MonoBehaviour
 {
     const int FADE_COUNT = 3;
-
+    
     public enum TutorialTitle
     {
         TUTORIAL_INTRODUCE = 0,
         TUTORIAL_MOVEMENT,
         TUTORIAL_CAMERA,
         TUTORIAL_GAME_CLEAR,
+        TUTORIAL_GAME_OVER,
+        TURORIAL_END,
     }
 
     [SerializeField]
@@ -33,16 +35,22 @@ public class TutorialManager : MonoBehaviour
     private GameObject _focusAnglePanel;
 
     [SerializeField]
-    private float _fadeSpeed; // “§–¾“x‚ª•Ï‚í‚éƒXƒs[ƒh‚ğŠÇ—
+    private GameObject _lifePanel;
+
+    [SerializeField]
+    private float _fadeSpeed; // é€æ˜åº¦ãŒå¤‰ã‚ã‚‹ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ç®¡ç†
 
     [SerializeField]
     private Camera _mainCamera;
 
     [SerializeField]
     private GameObject _spotLight;
+
+    [SerializeField]
+    private Image _lifeImage;
     
     /// <summary>
-    /// ƒpƒlƒ‹‚ÌƒtƒF[ƒhˆ—’†ƒtƒ‰ƒO
+    /// ãƒ‘ãƒãƒ«ã®ãƒ•ã‚§ãƒ¼ãƒ‰å‡¦ç†ä¸­ãƒ•ãƒ©ã‚°
     /// </summary>
     public bool ActiveFadePanelFlg
     {
@@ -53,7 +61,7 @@ public class TutorialManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒpƒlƒ‹‚ÌƒtƒF[ƒhˆ—ŠJnƒtƒ‰ƒO‚Ìó‘Ô
+    /// ãƒ‘ãƒãƒ«ã®ãƒ•ã‚§ãƒ¼ãƒ‰å‡¦ç†é–‹å§‹ãƒ•ãƒ©ã‚°ã®çŠ¶æ…‹
     /// </summary>
     public bool GetPanelEnabledChangeFlg
     {
@@ -64,7 +72,7 @@ public class TutorialManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒXƒ|ƒbƒgƒ‰ƒCƒg‚ª—L–³‚ğæ“¾
+    /// ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆãŒæœ‰ç„¡ã‚’å–å¾—
     /// </summary>
     public bool GetSpotLightEnable
     {
@@ -75,7 +83,18 @@ public class TutorialManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Œ»İ‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹ó‘Ô‚ğ•Ô‚·
+    /// ãƒ©ã‚¤ãƒ•ç”»åƒã®æœ‰ç„¡ã‚’å–å¾—
+    /// </summary>
+    public bool GetLifeImageEnable
+    {
+        get
+        {
+            return _lifeImage.enabled;
+        }
+    }
+
+    /// <summary>
+    /// ç¾åœ¨ã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«çŠ¶æ…‹ã‚’è¿”ã™
     /// </summary>
     public int GetCurrentTutorialStatus
     {
@@ -85,192 +104,218 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
+    private GameManager _gameManager;
+    private FadeManager _fadeManager;
     public static TutorialManager instance;
 
     private UnityEvent _focusPanelFlgEvent = new UnityEvent();
+    private UnityEvent _lifeLostFlgEvent = new UnityEvent();
 
-    // ƒ`ƒ…[ƒgƒŠƒAƒ‹ƒ^ƒXƒN
+    // ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã‚¿ã‚¹ã‚¯
     private ITutorialTask _currentTask;
     private List<ITutorialTask> _tutorialTask;
     private bool[] _tutorialTaskCompleteStatus;
     private int _tutorialTaskIndex;
 
-    // ƒ`ƒ…[ƒgƒŠƒAƒ‹•\¦ƒtƒ‰ƒO
+    // ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«è¡¨ç¤ºãƒ•ãƒ©ã‚°
     private bool _isEnabled;
 
-    // ƒ`ƒ…[ƒgƒŠƒAƒ‹ƒ^ƒXƒN‚ÌğŒ‚ğ–‚½‚µ‚½Û‚Ì‘JˆÚ—pƒtƒ‰ƒO
+    // ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã‚¿ã‚¹ã‚¯ã®æ¡ä»¶ã‚’æº€ãŸã—ãŸéš›ã®é·ç§»ç”¨ãƒ•ãƒ©ã‚°
     private bool _taskExecuted = false;
 
-    // ƒ`ƒ…[ƒgƒŠƒAƒ‹•\¦‚ÌUIˆÚ“®‹——£
+    // ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«è¡¨ç¤ºæ™‚ã®UIç§»å‹•è·é›¢
     private float fade_pos_x = 350;
 
-    // ƒtƒF[ƒh—p‚Ì‰æ‘fî•ñ
+    // ãƒ•ã‚§ãƒ¼ãƒ‰ç”¨ã®ç”»ç´ æƒ…å ±
     private float _red;
     private float _green;
     private float _blue;
     private float _alpha;
-
+    private float _lifeAlpha;
 
     private bool _activeFadePanelFlg;
-    //private bool _anglePanelEnabled;
 
-    // ƒeƒLƒXƒgæ“¾ƒtƒ‰ƒO
+    // ãƒ†ã‚­ã‚¹ãƒˆå–å¾—ãƒ•ãƒ©ã‚°
     private bool _updateTextFlg;
 
-    // ƒJ[ƒ\ƒ‹‚ÆƒAƒ“ƒOƒ‹‚Ìƒpƒlƒ‹‚Ì•\¦/”ñ•\¦‚ğs‚¤
+    // ã‚«ãƒ¼ã‚½ãƒ«ã¨ã‚¢ãƒ³ã‚°ãƒ«ã®ãƒ‘ãƒãƒ«ã®è¡¨ç¤º/éè¡¨ç¤ºã‚’è¡Œã†
     private bool _panelEnabledChangeFlg;
     private int _repeatFadeCnt;
 
-    // ¡‰½‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹‚ğÀs‚µ‚Ä‚¢‚é‚Ì‚©‚ğ•\‚·•Ï”
+    // ä»Šä½•ã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã‚’å®Ÿè¡Œã—ã¦ã„ã‚‹ã®ã‹ã‚’è¡¨ã™å¤‰æ•°
     private int _currentTutorialStatus;
 
-    // instanceì¬
+    // ãƒ©ã‚¤ãƒ•æ¶ˆæ»…ã‚’è¡Œã†ãƒ•ãƒ©ã‚°
+    private bool _lifeLostFlg;
+
+    private float _rotateSec;
+
+    // instanceä½œæˆ
     void Awake()
     {
+        _gameManager = GameManager.Instance;
+        _fadeManager = FadeManager.Instance;
+        _fadeManager.SetFadeOutFlgEvent();
+
         if (instance == null)
         {
             instance = this;
         }
     }
-
+    
     void Start()
     {
+        Debug.Log("GameClearFlg : " + _gameManager.GameClearFlg);
+        Debug.Log("GameOverFlg : " + _gameManager.GameOverFlg);
+
         _tutorialTask = new List<ITutorialTask>();
 
-        // “±“üƒ`ƒ…[ƒgƒŠƒAƒ‹’è‹`
+        // å°å…¥ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«å®šç¾©
         _tutorialTask.Add(new Introducetask());
-        // ‘€ìˆÚ“®ƒ`ƒ…[ƒgƒŠƒAƒ‹’è‹`
+        // æ“ä½œç§»å‹•ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«å®šç¾©
         _tutorialTask.Add(new MovementTask());
-        // ƒJƒƒ‰ƒAƒ“ƒOƒ‹Ø‚è‘Ö‚¦ƒ`ƒ…[ƒgƒŠƒAƒ‹’è‹`
+        // ã‚«ãƒ¡ãƒ©ã‚¢ãƒ³ã‚°ãƒ«åˆ‡ã‚Šæ›¿ãˆãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«å®šç¾©
         _tutorialTask.Add(new CameraAngleTask());
-        // ƒNƒŠƒAğŒŠm”Fƒ`ƒ…[ƒgƒŠƒAƒ‹’è‹`
+        // ã‚¯ãƒªã‚¢æ¡ä»¶ç¢ºèªãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«å®šç¾©
         _tutorialTask.Add(new GameClearTask());
-        // ƒQ[ƒ€ƒI[ƒo[ğŒŠm”Fƒ`ƒ…[ƒgƒŠƒAƒ‹’è‹`
+        // ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼æ¡ä»¶ç¢ºèªãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«å®šç¾©
+        _tutorialTask.Add(new GameOverTask());
+        // ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«çµ‚äº†
+        _tutorialTask.Add(new TutorialEndTask());
 
-
-        // Šeƒ`ƒ…[ƒgƒŠƒAƒ‹‚ÌŠ®—¹ó‘Ô‚ğ•Û‚·‚é”z—ñ‚ğ’è‹`
+        // å„ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã®å®Œäº†çŠ¶æ…‹ã‚’ä¿æŒã™ã‚‹é…åˆ—ã‚’å®šç¾©
         _tutorialTaskCompleteStatus = new bool[_tutorialTask.Count]; //new bool[_tutorialTask.Count - 1];
 
-        // ƒtƒ‰ƒO‰Šú‰»
+        // ãƒ•ãƒ©ã‚°åˆæœŸåŒ–
         for (var i = 0; i < _tutorialTaskCompleteStatus.Length; i++)
         {
             _tutorialTaskCompleteStatus[i] = false;
         }
 
 
-        // Å‰‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹‚ğİ’è
+        // æœ€åˆã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã‚’è¨­å®š
         StartCoroutine(SetCurrentTask(_tutorialTask.First()));
 
 
-        /**************************ƒpƒlƒ‹ŠÖ˜A********************************/
-        // Fî•ñæ“¾(ƒpƒlƒ‹‚Í‚Ç‚ê‚à“¯ˆêF)
+        /**************************ãƒ‘ãƒãƒ«é–¢é€£********************************/
+        // è‰²æƒ…å ±å–å¾—(ãƒ‘ãƒãƒ«ã¯ã©ã‚Œã‚‚åŒä¸€è‰²)
         _red = _focusCursolPanel.GetComponent<Image>().color.r;
         _green = _focusCursolPanel.GetComponent<Image>().color.g;
         _blue = _focusCursolPanel.GetComponent<Image>().color.b;
         _alpha = _focusCursolPanel.GetComponent<Image>().color.a;
+        _lifeAlpha = _lifeImage.GetComponent<Image>().color.a;
 
-        // ƒtƒH[ƒJƒXƒpƒlƒ‹‚ğ“§–¾‚É‚·‚é
+        // ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ãƒ‘ãƒãƒ«ã‚’é€æ˜ã«ã™ã‚‹
         _focusCursolPanel.GetComponent<Image>().color = new Color(_red, _green, _blue, 0);
         _focusAnglePanel.GetComponent<Image>().color = new Color(_red, _green, _blue, 0);
         _repeatFadeCnt = 0;
         _activeFadePanelFlg = false;
         _panelEnabledChangeFlg = false;
         
-        /**************************ƒXƒ|ƒbƒgƒ‰ƒCƒgŠÖ˜A************************/
-        //_spotLight = GameObject.Find("SpotLight");
-        // GameClearTutorialŒã‚É‘€ì‚Å‚«‚é‚æ‚¤‚ÉƒXƒ|ƒbƒgƒ‰ƒCƒg‚Í”ñ•\¦‚É‚·‚é
+        /**************************ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆé–¢é€£************************/
+        // GameClearTutorialå¾Œã«æ“ä½œã§ãã‚‹ã‚ˆã†ã«ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆã¯éè¡¨ç¤ºã«ã™ã‚‹
         _spotLight.SetActive(false);
 
-        /**************************ƒXƒ|ƒbƒgƒ‰ƒCƒgŠÖ˜A************************/
-        // CameraTutorialŒã‚É‘€ì‚Å‚«‚é‚æ‚¤‚ÉMainCamera‚Í”ñ•\¦‚É‚·‚é
+        /**************************ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆé–¢é€£************************/
+        // CameraTutorialå¾Œã«æ“ä½œã§ãã‚‹ã‚ˆã†ã«MainCameraã¯éè¡¨ç¤ºã«ã™ã‚‹
         _mainCamera.enabled = false;
 
-        //// 0’è‹`‚¾‚Æ
+        //// 0å®šç¾©ã ã¨
         //_tutorialTaskIndex = -1;
         _currentTutorialStatus = -1;
         _isEnabled = true;
-
+        _lifeLostFlg = false;
 
     }
 
     /// <summary>
-    /// V‚µ‚¢ƒ`ƒ…[ƒgƒŠƒAƒ‹ƒ^ƒXƒN‚ğİ’è‚·‚é
+    /// æ–°ã—ã„ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã‚¿ã‚¹ã‚¯ã‚’è¨­å®šã™ã‚‹
     /// </summary>
     /// <param name="task"></param>
     /// <param name="time"></param>
     /// <returns></returns>
     protected IEnumerator SetCurrentTask(ITutorialTask task, float time = 0)
     {
-        // time‚ªw’è‚³‚ê‚Ä‚¢‚éê‡‚Í‘Ò‹@
+        // timeãŒæŒ‡å®šã•ã‚Œã¦ã„ã‚‹å ´åˆã¯å¾…æ©Ÿ
         yield return new WaitForSeconds(time);
 
-        // Œ»İ‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹‚ğİ’è
+        // ç¾åœ¨ã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã‚’è¨­å®š
         _currentTask = task;
-        // Œ»İ‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹Š®—¹ƒtƒ‰ƒO
+        // ç¾åœ¨ã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«å®Œäº†ãƒ•ãƒ©ã‚°
         _taskExecuted = false;
 
-        // ƒ`ƒ…[ƒgƒŠƒAƒ‹ƒ^ƒXƒNİ’è—p‚ÌŠÖ”‚ğÀs
+        // ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã‚¿ã‚¹ã‚¯è¨­å®šæ™‚ç”¨ã®é–¢æ•°ã‚’å®Ÿè¡Œ
         task.OnTaskSetting();
 
-        // UI‚Éƒ^ƒCƒgƒ‹‚Æà–¾•¶‚ğİ’è
+        // UIã«ã‚¿ã‚¤ãƒˆãƒ«ã¨èª¬æ˜æ–‡ã‚’è¨­å®š
         _tutorialTitle.text = GetTitle(task.GetTitleIndex());
         _tutorialText.text = task.GetText();
         _updateTextFlg = true;
         _currentTutorialStatus++;
-        //_tutorialTaskIndex++;
-
     }
     
     void Update()
     {
-        // Às’†‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹‚Ìà–¾•¶‚ğæ“¾
-        // TransitionTime‚ª1ˆÈã‚¾‚ÆƒGƒ‰[
+        // å®Ÿè¡Œä¸­ã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã®èª¬æ˜æ–‡ã‚’å–å¾—
+        // TransitionTimeãŒ1ä»¥ä¸Šã ã¨ã‚¨ãƒ©ãƒ¼
         if (_updateTextFlg)
         {
             _tutorialText.text = _currentTask.GetText();
         }
 
-        // panel‚Ì•\¦/”ñ•\¦ˆ—
+        // panelã®è¡¨ç¤º/éè¡¨ç¤ºå‡¦ç†
         if (_panelEnabledChangeFlg)
         {
             FadeFocusPanel();
         }
+        
+        // ãƒ©ã‚¤ãƒ•æ¶ˆæ»…å‡¦ç†
+        if (_lifeLostFlg)
+        {
+            LostLife();
+        }
 
-        // Œ»İ‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹ì‹Æ‚ªŠ®—¹‚µ‚½“_‚Å
-        // ˆê“x‘€ì‚Íó‚¯•t‚¯‚È‚¢‚æ‚¤‚Éƒpƒlƒ‹‚ğ•\¦‚³‚¹‚é(“§–¾“x1)
+        // ç¾åœ¨ã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ä½œæ¥­ãŒå®Œäº†ã—ãŸæ™‚ç‚¹ã§
+        // ä¸€åº¦æ“ä½œã¯å—ã‘ä»˜ã‘ãªã„ã‚ˆã†ã«ãƒ‘ãƒãƒ«ã‚’è¡¨ç¤ºã•ã›ã‚‹(é€æ˜åº¦1)
         if (_currentTask != null && _currentTask.IsTutorialComplete())
         {
             if (!_tutorialTaskCompleteStatus[_currentTask.GetTitleIndex()]) //[_tutorialTaskIndex])
             {
-                //Debug.Log(_tutorialTitle.text);
-                //Debug.Log("ƒ`ƒ…[ƒgƒŠƒAƒ‹ƒCƒ“ƒfƒbƒNƒXF");
-                //Debug.Log(_tutorialTaskIndex);
                 _tutorialTaskCompleteStatus[_currentTask.GetTitleIndex()] = true; //[_tutorialTaskIndex] = true;
             }
 
             ResetPanel();
         }
 
-        // ƒ`ƒ…[ƒgƒŠƒAƒ‹‚ª‘¶İ‚µÀs‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Éˆ—
+        // ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ãŒå­˜åœ¨ã—å®Ÿè¡Œã•ã‚Œã¦ã„ãªã„å ´åˆã«å‡¦ç†
         if (_currentTask != null && !_taskExecuted)
         {
-            // Œ»İ‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹‚ªÀs‚³‚ê‚½‚©”»’è
+            // ç¾åœ¨ã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ãŒå®Ÿè¡Œã•ã‚ŒãŸã‹åˆ¤å®š
             if (_currentTask.CheckTask())
             {
                 _taskExecuted = true;
 
-                // Œ»İİ’è‚³‚ê‚Ä‚¢‚éƒ`ƒ…[ƒgƒŠƒAƒ‹‚ğíœ
+                // ç¾åœ¨è¨­å®šã•ã‚Œã¦ã„ã‚‹ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã‚’å‰Šé™¤
                 _tutorialTask.RemoveAt(0);
 
                 Debug.Log("delete current tutorial");
 
                 var nextTask = _tutorialTask.FirstOrDefault();
 
-                // ƒ`ƒ…[ƒgƒŠƒAƒ‹‚ª‚Ü‚¾c‚Á‚Ä‚¢‚é‚È‚çŸ‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹‚ğÀs
+                // ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ãŒã¾ã æ®‹ã£ã¦ã„ã‚‹ãªã‚‰æ¬¡ã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã‚’å®Ÿè¡Œ
                 if (nextTask != null)
                 {
                     _updateTextFlg = false;
                     StartCoroutine(SetCurrentTask(nextTask, 1f));
+                }
+                else
+                {
+                    // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã—ã¦å‰ç”»é¢ã«æˆ»ã‚‹
+                    _fadeManager.CallFadeOutFlgEvent((int)FadeManager.NextScene.SCENE_STAGE_SELECT);
+
+                    // GameManagerå´ã®ãƒ•ãƒ©ã‚°ã‚’åˆæœŸåŒ–ã™ã‚‹
+                    _gameManager.CallGameClearFlgEvent();
+                    _gameManager.CallGameOverFlgEvent();
                 }
             }
         }
@@ -283,16 +328,22 @@ public class TutorialManager : MonoBehaviour
         switch (titleIndex)
         {
             case (int)TutorialTitle.TUTORIAL_INTRODUCE:
-                retTitle = "ƒQ[ƒ€“±“ü ŠT—v";
+                retTitle = "ã‚²ãƒ¼ãƒ å°å…¥ æ¦‚è¦";
                 break;
             case (int)TutorialTitle.TUTORIAL_MOVEMENT:
-                retTitle = "‘€ìŠm”F ˆÚ“®";
+                retTitle = "æ“ä½œç¢ºèª ç§»å‹•";
                 break;
             case (int)TutorialTitle.TUTORIAL_CAMERA:
-                retTitle = "‘€ìŠm”F ƒJƒƒ‰";
+                retTitle = "æ“ä½œç¢ºèª ã‚«ãƒ¡ãƒ©";
                 break;
             case (int)TutorialTitle.TUTORIAL_GAME_CLEAR:
-                retTitle = "‘€ìŠm”F ƒQ[ƒ€ƒNƒŠƒA";
+                retTitle = "æ“ä½œç¢ºèª ã‚²ãƒ¼ãƒ ã‚¯ãƒªã‚¢";
+                break;
+            case (int)TutorialTitle.TUTORIAL_GAME_OVER:
+                retTitle = "æ“ä½œç¢ºèª ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼";
+                break;
+            case (int)TutorialTitle.TURORIAL_END:
+                retTitle = "ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«çµ‚äº†";
                 break;
         }
 
@@ -301,19 +352,19 @@ public class TutorialManager : MonoBehaviour
 
 
 
-    // ƒCƒxƒ“ƒgŠÖ˜Aˆ—(“o˜^)
+    // ã‚¤ãƒ™ãƒ³ãƒˆé–¢é€£å‡¦ç†(ç™»éŒ²)
     public void SetPanelEnabledChangeFlgEvent()
     {
         _focusPanelFlgEvent.AddListener(SetFocusPanelFlg);
     }
 
-    // ƒCƒxƒ“ƒgŠÖ˜Aˆ—(Às)
+    // ã‚¤ãƒ™ãƒ³ãƒˆé–¢é€£å‡¦ç†(å®Ÿè¡Œ)
     public void CallPanelEnabledChangeFlgEvent()
     {
         _focusPanelFlgEvent.Invoke();
     }
 
-    // ƒCƒxƒ“ƒgŠÖ˜Aˆ—(íœ)
+    // ã‚¤ãƒ™ãƒ³ãƒˆé–¢é€£å‡¦ç†(å‰Šé™¤)
     public void RemovePanelEnabledChangeFlgEvent()
     {
         _focusPanelFlgEvent.RemoveListener(SetFocusPanelFlg);
@@ -331,19 +382,50 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
+    // ã‚¤ãƒ™ãƒ³ãƒˆé–¢é€£å‡¦ç†(ç™»éŒ²)
+    public void SetLifeLostFlgEvent()
+    {
+        _lifeLostFlgEvent.AddListener(SetLifeLostFlg);
+    }
 
-    // ƒtƒF[ƒhŠJn
+    // ã‚¤ãƒ™ãƒ³ãƒˆé–¢é€£å‡¦ç†(å®Ÿè¡Œ)
+    public void CallLifeLostFlgEvent()
+    {
+        _lifeLostFlgEvent.Invoke();
+    }
+
+    // ã‚¤ãƒ™ãƒ³ãƒˆé–¢é€£å‡¦ç†(å‰Šé™¤)
+    public void RemoveLifeLostFlgEvent()
+    {
+        _lifeLostFlgEvent.RemoveListener(SetLifeLostFlg);
+    }
+
+
+    private void SetLifeLostFlg()
+    {
+        if (_lifeLostFlg)
+        {
+            _lifeLostFlg = false;
+        }
+        else
+        {
+            _lifeLostFlg = true;
+        }
+    }
+
+
+    // ãƒ•ã‚§ãƒ¼ãƒ‰é–‹å§‹
     private void FadeFocusPanel()
     {
-        // ƒtƒF[ƒhˆ—’†
+        // ãƒ•ã‚§ãƒ¼ãƒ‰å‡¦ç†ä¸­
         _activeFadePanelFlg = true;
 
-        // w’è‚µ‚½ƒXƒs[ƒh‚Å1ƒtƒŒ[ƒ€‚¸‚Â“§–¾“x‚ğ‘«‚µ‚Ä‚¢‚­
+        // æŒ‡å®šã—ãŸã‚¹ãƒ”ãƒ¼ãƒ‰ã§1ãƒ•ãƒ¬ãƒ¼ãƒ ãšã¤é€æ˜åº¦ã‚’è¶³ã—ã¦ã„ã
         _alpha += _fadeSpeed * Time.deltaTime;
 
         SetAlpha();
 
-        // İ’è’l‚ªMAX‚Ìê‡(Å‘å’l‚Í1.0)
+        // è¨­å®šå€¤ãŒMAXã®å ´åˆ(æœ€å¤§å€¤ã¯1.0)
         if (_alpha >= 0.5f)
         {
             _alpha = 0;
@@ -356,13 +438,13 @@ public class TutorialManager : MonoBehaviour
 
     private void ChangeFocusPanelEnabled()
     {
-        // ˆê’è‰ñ”ƒtƒF[ƒhˆ—‚µ‚Ä‚¢‚È‚¢‚È‚çI—¹
+        // ä¸€å®šå›æ•°ãƒ•ã‚§ãƒ¼ãƒ‰å‡¦ç†ã—ã¦ã„ãªã„ãªã‚‰çµ‚äº†
         if (_repeatFadeCnt < FADE_COUNT)
         {
             return;
         }
 
-        // ƒtƒF[ƒhƒAƒEƒgI—¹‚µ‚Ä“§–¾“x‚ğƒŠƒZƒbƒg‚·‚é
+        // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆçµ‚äº†ã—ã¦é€æ˜åº¦ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹
         _panelEnabledChangeFlg = false;
 
         if (_currentTask.GetTitleIndex() == (int)TutorialTitle.TUTORIAL_MOVEMENT)
@@ -377,32 +459,34 @@ public class TutorialManager : MonoBehaviour
         {
             _focusCursolPanel.SetActive(false);
             _focusAnglePanel.SetActive(false);
-            _spotLight.SetActive(true);
+        }
+        else if (_currentTask.GetTitleIndex() == (int)TutorialTitle.TUTORIAL_GAME_OVER)
+        {
+             _lifePanel.SetActive(false);
         }
 
-        // ƒtƒF[ƒhˆ—‚ğˆê’è‰ñ”‚µ‚½‚½‚ßAŸƒ`ƒ…[ƒgƒŠƒAƒ‹ˆ—‚Ì‚½‚ß‚É‰Šú‰»
+        // ãƒ•ã‚§ãƒ¼ãƒ‰å‡¦ç†ã‚’ä¸€å®šå›æ•°ã—ãŸãŸã‚ã€æ¬¡ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«å‡¦ç†ã®ãŸã‚ã«åˆæœŸåŒ–
         _repeatFadeCnt = 0;
         _activeFadePanelFlg = false;
-        Debug.Log("activePanel false");
         Debug.Log(_activeFadePanelFlg);
     }
 
     private void ResetPanel()
     {
-        Debug.Log("ResetPanel");
-        // ˆÚ“®ƒ`ƒ…[ƒgƒŠƒAƒ‹’†
+        // Debug.Log("ResetPanel");
+        // ç§»å‹•ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ä¸­
         if (_currentTask.GetTitleIndex() == (int)TutorialTitle.TUTORIAL_MOVEMENT)
         {
             _focusCursolPanel.SetActive(true);
             _focusCursolPanel.GetComponent<Image>().color = new Color(_red, _green, _blue, 0);
         }
-        // ƒJƒƒ‰ƒ`ƒ…[ƒgƒŠƒAƒ‹’†
+        // ã‚«ãƒ¡ãƒ©ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ä¸­
         else if (_currentTask.GetTitleIndex() == (int)TutorialTitle.TUTORIAL_CAMERA)
         {
             _focusAnglePanel.SetActive(true);
             _focusAnglePanel.GetComponent<Image>().color = new Color(_red, _green, _blue, 0);
         }
-        // ƒQ[ƒ€ƒNƒŠƒAŠm”Fƒ`ƒ…[ƒgƒŠƒAƒ‹’†
+        // ã‚²ãƒ¼ãƒ ã‚¯ãƒªã‚¢ç¢ºèªãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ä¸­
         else if (_currentTask.GetTitleIndex() == (int)TutorialTitle.TUTORIAL_GAME_CLEAR)
         {
             _focusCursolPanel.SetActive(true);
@@ -410,8 +494,14 @@ public class TutorialManager : MonoBehaviour
             _focusCursolPanel.GetComponent<Image>().color = new Color(_red, _green, _blue, 0);
             _focusAnglePanel.GetComponent<Image>().color = new Color(_red, _green, _blue, 0);
         }
+        // ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼ç¢ºèªãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ä¸­
+        else if (_currentTask.GetTitleIndex() == (int)TutorialTitle.TUTORIAL_GAME_OVER)
+        {
+            _lifePanel.SetActive(true);
+            _lifePanel.GetComponent<Image>().color = new Color(_red, _green, _blue, 0);
+        }
     }
-        // Panel‚ÌImage‰æ‘f‚ğİ’è‚·‚é
+        // Panelã®Imageç”»ç´ ã‚’è¨­å®šã™ã‚‹
     private void SetAlpha()
     {
         if (_currentTask.GetTitleIndex() == (int)TutorialTitle.TUTORIAL_MOVEMENT)
@@ -427,11 +517,73 @@ public class TutorialManager : MonoBehaviour
             _focusCursolPanel.GetComponent<Image>().color = new Color(_red, _green, _blue, _alpha);
             _focusAnglePanel.GetComponent<Image>().color = new Color(_red, _green, _blue, _alpha);
         }
+        else if (_currentTask.GetTitleIndex() == (int)TutorialTitle.TUTORIAL_GAME_OVER)
+        {
+            _lifePanel.GetComponent<Image>().color = new Color(_red, _green, _blue, _alpha);
+        }
     }
 
     public bool GetTutorialTaskCompStatus(int index)
     {
-        //Debug.Log("”z—ñ”"+ _tutorialTaskCompleteStatus.Length);
         return _tutorialTaskCompleteStatus[index];
+    }
+
+    public void SetSpotLightActive()
+    {
+        _spotLight.SetActive(true);
+    }
+
+    // ãƒ©ã‚¤ãƒ•ã‚’æ¶ˆæ»…ã•ã›ã‚‹
+    private void LostLife()
+    {
+        // ä»»æ„ã®è»¸ã‚’ä¸­å¿ƒã«ã©ã‚Œãã‚‰ã„ã®è§’åº¦ã§å›è»¢ã•ã›ãŸã„ã‹ã‚’ã‚ªã‚¤ãƒ©ãƒ¼è§’(0ã€œ360Â°)ã§æŒ‡å®š
+        Quaternion rot = Quaternion.AngleAxis(30, Vector3.up);
+        // ç¾åœ¨ã®è‡ªä¿¡ã®å›è»¢ã®æƒ…å ±ã‚’å–å¾—ã™ã‚‹ã€‚
+        Quaternion q = _lifeImage.transform.rotation;
+        // ä»Šã®å›è»¢æƒ…å ±ã«30åº¦å›ã™ãŸã‚ã®æƒ…å ±ã‚’è¨­å®š
+        Quaternion tarRotate = q * rot;
+
+        _rotateSec += 0.5f * Time.deltaTime;
+
+        // æŒ‡å®šã—ãŸã‚¹ãƒ”ãƒ¼ãƒ‰ã§1ãƒ•ãƒ¬ãƒ¼ãƒ ãšã¤é€æ˜åº¦ã‚’è¶³ã—ã¦ã„ã
+        _lifeAlpha -= 0.2f * Time.deltaTime;
+
+        // ç¾åœ¨ã®å›è»¢å€¤ã‹ã‚‰ã€30åº¦ã§å›ã™(ã‚†ã£ãã‚Š)
+        _lifeImage.transform.rotation = Quaternion.Lerp(q, tarRotate, _rotateSec);
+        _lifeImage.GetComponent<Image>().color = new Color(255, 255, 255, _lifeAlpha);
+
+        if (_lifeAlpha <= 0)
+        {
+            _lifeImage.enabled = false;
+        }
+    }
+
+
+    // TutorialSpotArea.csã‹ã‚‰å‘¼ã°ã‚Œã‚‹é–¢æ•°
+    // å‘¼ã³å…ƒãŒæœ€åˆã¯éæ´»æ€§ã®ãŸã‚TutorialManagerå´ã‹ã‚‰è¨­å®šã™ã‚‹
+    // 1åº¦ã—ã‹å‘¼ã°ã‚Œãªã„
+    public void SetTutorialGameClearFlg()
+    {
+        _gameManager.CallGameClearFlgEvent();
+    }
+
+    // TutorialSpotArea.csã‹ã‚‰å‘¼ã°ã‚Œã‚‹é–¢æ•°
+    // å‘¼ã³å…ƒãŒæœ€åˆã¯éæ´»æ€§ã®ãŸã‚TutorialManagerå´ã‹ã‚‰è¨­å®šã™ã‚‹
+    // 1åº¦ã—ã‹å‘¼ã°ã‚Œãªã„
+    public void SetTutorialGameOverFlg()
+    {
+        _gameManager.CallGameOverFlgEvent();
+    }
+
+
+    // Awakeã§ç™»éŒ²ã—ãŸã‚¤ãƒ™ãƒ³ãƒˆã‚’å‰Šé™¤ã™ã‚‹
+    private void OnDisable()
+    {
+        // Debug.Log("TutorialManager Remove");
+
+        // ã‚¤ãƒ™ãƒ³ãƒˆå‰Šé™¤ã¯Disable.cså´å‡¦ç†ã™ã‚‹
+        //_gameManager.RemoveGameOverFlgEvent();
+        //_gameManager.RemoveGameClearFlgEvent();
+        //_fadeManager.RemoveFadeOutFlgEvent();
     }
 }

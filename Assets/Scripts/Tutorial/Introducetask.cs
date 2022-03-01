@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Introducetask : ITutorialTask
 {
     private int textIndex;
-    private List<string> textMessages = new List<string>();
     private string[] _textSentence;
 
     private bool _showMessageComplete;
@@ -19,20 +16,14 @@ public class Introducetask : ITutorialTask
     public void OnTaskSetting()
     {
         textIndex = 0;
-        
-        textMessages.Add("‰‚ß‚Ü‚µ‚Ä!!");
-        textMessages.Add("Escape To The Run‚Ö‚æ‚¤‚±‚»");
-        textMessages.Add("‚±‚ÌƒQ[ƒ€‚ÍAwƒLƒƒƒ‰ƒNƒ^[‚ğ‘€ì‚µ‚ÄAƒXƒe[ƒWã‚ÉoŒ»‚·‚éƒXƒ|ƒbƒgƒGƒŠƒA‚ÉŒü‚©‚Á‚Ä“¦‚°‚éx‚ğ–Ú“I‚Æ‚µ‚½AƒAƒNƒVƒ‡ƒ“ƒQ[ƒ€‚Æ‚È‚Á‚Ä‚¢‚Ü‚·B");
-        textMessages.Add("“¹’†‚Å‚ÍA“G‚ªoŒ»‚·‚é‚±‚Æ‚à‚ ‚é‚Ì‚ÅAãè‚­”ğ‚¯‚È‚ª‚çƒXƒ|ƒbƒg‚Ö“¦‚°‚Ä‚­‚¾‚³‚¢c!!");
-        textMessages.Add("‚»‚ê‚Å‚ÍAƒQ[ƒ€‚Ì‘€ì•û–@‚ğà–¾‚µ‚Ä‚¢‚«‚Ü‚·");
 
         _textSentence = new string[]
         {
-            "‰‚ß‚Ü‚µ‚Ä!!",
-            "Escape To The Run‚Ö‚æ‚¤‚±‚»!!",
-            "‚±‚ÌƒQ[ƒ€‚ÍAwƒLƒƒƒ‰ƒNƒ^[‚ğ‘€ì‚µ‚ÄAƒXƒe[ƒWã‚ÉoŒ»‚·‚éƒXƒ|ƒbƒgƒGƒŠƒA‚ÉŒü‚©‚Á‚Ä“¦‚°‚éx‚ğ–Ú“I‚Æ‚µ‚½AƒAƒNƒVƒ‡ƒ“ƒQ[ƒ€‚Æ‚È‚Á‚Ä‚¢‚Ü‚·B",
-            "“¹’†‚Å‚ÍA“G‚ªoŒ»‚·‚é‚±‚Æ‚à‚ ‚é‚Ì‚ÅAãè‚­”ğ‚¯‚È‚ª‚çƒXƒ|ƒbƒg‚Ö“¦‚°‚Ä‚­‚¾‚³‚¢c!!",
-            "‚»‚ê‚Å‚ÍAƒQ[ƒ€‚Ì‘€ì•û–@‚ğà–¾‚µ‚Ä‚¢‚«‚Ü‚·B",
+            "åˆã‚ã¾ã—ã¦!!",
+            "Escape To The Runã¸ã‚ˆã†ã“ã!!",
+            "ã“ã®ã‚²ãƒ¼ãƒ ã¯ã€ã€ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’æ“ä½œã—ã¦ã€ã‚¹ãƒ†ãƒ¼ã‚¸ä¸Šã«å‡ºç¾ã™ã‚‹ã‚¹ãƒãƒƒãƒˆã‚¨ãƒªã‚¢ã«å‘ã‹ã£ã¦é€ƒã’ã‚‹ã€ã‚’ç›®çš„ã¨ã—ãŸã€ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚²ãƒ¼ãƒ ã¨ãªã£ã¦ã„ã¾ã™ã€‚",
+            "é“ä¸­ã§ã¯ã€æ•µãŒå‡ºç¾ã™ã‚‹ã“ã¨ã‚‚ã‚ã‚‹ã®ã§ã€ä¸Šæ‰‹ãé¿ã‘ãªãŒã‚‰ã‚¹ãƒãƒƒãƒˆã¸é€ƒã’ã¦ãã ã•ã„â€¦!!",
+            "ãã‚Œã§ã¯ã€ã‚²ãƒ¼ãƒ ã®æ“ä½œæ–¹æ³•ã‚’èª¬æ˜ã—ã¦ã„ãã¾ã™ã€‚",
         };
 
         _currentSentenceNumber = _textSentence.Length;
@@ -52,73 +43,48 @@ public class Introducetask : ITutorialTask
 
     public string GetText()
     {
-        if (textIndex >= textMessages.Count)
-        {
-            return textMessages[textMessages.Count - 1];
-        }
-        else
-        {
-            return _currentSenetnce; //textMessages[textIndex];
-        }
+        return _currentSenetnce;
     }
 
 
     public bool CheckTask()
     {
-        // Œ»İ•\¦‚³‚ê‚é‚×‚«ƒƒbƒZ[ƒW“à—e‚ª‚·‚×‚Ä•\¦‚³‚ê‚Ä‚¢‚È‚¢ê‡
+        // ç¾åœ¨è¡¨ç¤ºã•ã‚Œã‚‹ã¹ããƒ¡ãƒƒã‚»ãƒ¼ã‚¸å†…å®¹ãŒã™ã¹ã¦è¡¨ç¤ºã•ã‚Œã¦ã„ãªã„å ´åˆ
         if (!_showMessageComplete)
         {
-
             if (CheckSentence())
             {
-                //Debug.Log(_textSentence[_currentSenetenceIndex][_currentCharIndex]);
-                // Š®—¹ƒtƒ‰ƒO‚ğİ’è
+                // å®Œäº†ãƒ•ãƒ©ã‚°ã‚’è¨­å®š
                 _showMessageComplete = true;
             }
             else
             {
-                // •\¦‚³‚ê‚éƒƒbƒZ[ƒW‚ğ1•¶š‚¸‚Âæ“¾‚µ‚Äİ’è‚·‚é
+                // è¡¨ç¤ºã•ã‚Œã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’1æ–‡å­—ãšã¤å–å¾—ã—ã¦è¨­å®šã™ã‚‹
                 _currentSenetnce = _currentSenetnce + _textSentence[_currentSenetenceIndex][_currentCharIndex];
 
-                // Ÿ‚Ì1•¶š‚Ö
+                // æ¬¡ã®1æ–‡å­—ã¸
                 _currentCharIndex++;
 
             }
         }
-        // Œ»İ•\¦‚³‚ê‚é‚×‚«ƒƒbƒZ[ƒW“à—e‚ª‚·‚×‚Ä•\¦‚Å‚«‚Ä‚¢‚éê‡
+        // ç¾åœ¨è¡¨ç¤ºã•ã‚Œã‚‹ã¹ããƒ¡ãƒƒã‚»ãƒ¼ã‚¸å†…å®¹ãŒã™ã¹ã¦è¡¨ç¤ºã§ãã¦ã„ã‚‹å ´åˆ
         else
         {
-            if (Input.GetMouseButtonDown(0))// (Input.touchCount == 1) tap‘€ì
+            if (Input.GetMouseButtonDown(0))// (Input.touchCount == 1) tapæ“ä½œ
             {
-                // Œ»İ‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹‚Å‚·‚×‚Ä‚ÌƒƒbƒZ[ƒW‚ª•\¦o—ˆ‚½‚çƒ`ƒ…[ƒgƒŠƒAƒ‹I—¹
+                // ç¾åœ¨ã®ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã§ã™ã¹ã¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒè¡¨ç¤ºå‡ºæ¥ãŸã‚‰ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«çµ‚äº†
                 if (_tutorialComplete)
                 {
-                    Debug.Log("IntroduceŠ®—¹");
+                    Debug.Log("Introduceå®Œäº†");
                     return true;
                 }
                 else
                 {
-                    // ƒƒbƒZ[ƒW‚ğ‰Šú‰»‚µ‚ÄAŸ‚ÌƒƒbƒZ[ƒW“à—e‚Ö
+                    // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’åˆæœŸåŒ–ã—ã¦ã€æ¬¡ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å†…å®¹ã¸
                     SetNextSentenceInfo();
                 }
             }
         }
-
-        
-
-
-        //// –‘O‚É—pˆÓ‚µ‚Ä‚¢‚éƒeƒLƒXƒgƒƒbƒZ[ƒW‚ğ‚·‚×‚Ä•\¦‚³‚¹‚½‚ç
-        //// Ÿ‚Ìƒ`ƒ…[ƒgƒŠƒAƒ‹‚Ö
-        //if (textIndex >= textMessages.Count)
-        //{
-        //    return true;
-        //}
-
-
-        //if (Input.GetMouseButtonDown(0))// (Input.touchCount == 1)
-        //{
-        //    textIndex++;
-        //}
 
         return false;
     }
@@ -135,19 +101,19 @@ public class Introducetask : ITutorialTask
 
     private bool CheckSentence()
     {
-        // ‚·‚×‚Ä‚ÌƒƒbƒZ[ƒW‚ğ•\¦‚µ‚Ä‚¢‚éê‡‚Íˆ—‚ğƒXƒLƒbƒv
+        // ã™ã¹ã¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤ºã—ã¦ã„ã‚‹å ´åˆã¯å‡¦ç†ã‚’ã‚¹ã‚­ãƒƒãƒ—
         if (_currentSenetenceIndex >= _textSentence.Length)
         {
             Debug.Log("tutorial complete set");
             _tutorialComplete = true;
 
-            // SetNextSentenceInfo‚É‚æ‚Á‚ÄƒƒbƒZ[ƒW‚ª‰Šú‰»‚³‚ê‚Ä‚¢‚é‚½‚ß
-            // ÅŒã‚Ì•¶Í‚ğİ’è
+            // SetNextSentenceInfoã«ã‚ˆã£ã¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒåˆæœŸåŒ–ã•ã‚Œã¦ã„ã‚‹ãŸã‚
+            // æœ€å¾Œã®æ–‡ç« ã‚’è¨­å®š
             _currentSenetnce = _textSentence[_currentSenetenceIndex - 1];
             return true;
         }
 
-        // •¶š‚ğ‚·‚×‚Ä•\¦‚·‚é‚±‚Æ‚ª‚Å‚«‚½‚çI—¹
+        // æ–‡å­—ã‚’ã™ã¹ã¦è¡¨ç¤ºã™ã‚‹ã“ã¨ãŒã§ããŸã‚‰çµ‚äº†
         if (_currentSenetnce.Length == _textSentence[_currentSenetenceIndex].Length)
         {
             return true;

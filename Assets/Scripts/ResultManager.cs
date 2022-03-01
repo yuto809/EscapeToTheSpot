@@ -43,9 +43,6 @@ public class ResultManager : MonoBehaviour
     [SerializeField]
     private string _textGameEnd = "Thank you for playing !!";
 
-
-    //private Text[] _buttonTexts = null;
-
     private int _nextSceneName;
 
     private Text _resultText;
@@ -68,48 +65,30 @@ public class ResultManager : MonoBehaviour
 
         // 結果表示
         _resultText = _canvas.GetComponentInChildren<Text>();
-
-        // パネル上のボタンテキスト
-        //_buttonTexts = _panel.GetComponentsInChildren<Text>();
-
-
-
-
         _retryButtonText = _retryButton.GetComponentInChildren<Text>();
         _selectButtonText = _SelectButton.GetComponentInChildren<Text>();
-
-
-
 
         SetSelectButtonText();
     }
 
     private void SetSelectButtonText()
     {
-        //_buttonTexts[0].text = "Retry !";
         _retryButtonText.text = _textRetry;
 
         // ゲームクリアの場合
-        // if (_gameManager.ResultFlg)
         if (_gameManager.GameClearFlg)
         {
             _resultText.text = _textGameClear;
-            //_resultText.text = "Game Clear !!";
 
             // クリアしたステージがHardの場合はゲーム終了(Topに戻す)
             if (_stageManager.SelectStageLevel == (int)StageManager.StageLevel.HARD)
             {
                 _resultText.text = _textGameEnd;
                 _selectButtonText.text = _textTop;
-
-                //_resultText.text = "Thank you for playing !!";
-                //_buttonTexts[1].text = "Top";
             }
             else
             {
                 _selectButtonText.text = _textNextStage;
-
-                //_buttonTexts[1].text = "Next Stage";
             }
         }
         // ゲームオーバーの場合
@@ -117,10 +96,6 @@ public class ResultManager : MonoBehaviour
         {
             _resultText.text = _textGameOver;
             _selectButtonText.text = _textSelectStage;
-
-
-            //_resultText.text = "Game Over...";
-            //_buttonTexts[1].text = "Stage Select";
         }
     }
 
@@ -134,7 +109,6 @@ public class ResultManager : MonoBehaviour
 
         _nextSceneName = (int)FadeManager.NextScene.SCENE_ESCAPE_TO_THE_SPOT;
         _fadeManager.CallFadeOutFlgEvent(_nextSceneName);
-        //_fadeManager.SceneName = "RunToTheSpot";
 
         // gameoverせずにクリアした場合は処理スキップ
         // gameoverの場合はフラグを再設定
@@ -149,14 +123,7 @@ public class ResultManager : MonoBehaviour
             _gameManager.CallGameClearFlgEvent();
         }
 
-        //_gameManager.ResultFlg = false;
-
-        // 使いまわす
-        // Assets / Resources / SE / Title / PlayClick.wav
-        //AudioClip audio = Resources.Load("SE/Title/PlayClick") as AudioClip;
-        //_audioManager.PlayClickSE(audio);
         _audioManager.PlayMusicSE((int)AudioManager.PlaySE.CLICK_START);
-
         _gameManager.StaySpotArea = false;
     }
 
@@ -169,19 +136,16 @@ public class ResultManager : MonoBehaviour
                 // Next Stage
                 case (int)StageManager.StageLevel.EASY:
                     _nextSceneName = (int)FadeManager.NextScene.SCENE_ESCAPE_TO_THE_SPOT;
-                    //_fadeManager.SceneName = "RunToTheSpot";
                     _stageManager.SelectStageLevel += 1;
                     break;
                 // Next Stage
                 case (int)StageManager.StageLevel.NORMAL:
                     _nextSceneName = (int)FadeManager.NextScene.SCENE_ESCAPE_TO_THE_SPOT;
-                    //_fadeManager.SceneName = "RunToTheSpot";
                     _stageManager.SelectStageLevel += 1;
                     break;
                 // Top
                 case (int)StageManager.StageLevel.HARD:
                     _nextSceneName = (int)FadeManager.NextScene.SCENE_TITLE;
-                    //_fadeManager.SceneName = "TitleScene";
                     break;
                 default:
                     break;
@@ -192,12 +156,9 @@ public class ResultManager : MonoBehaviour
         else
         {
             _nextSceneName = (int)FadeManager.NextScene.SCENE_STAGE_SELECT;
-            //_fadeManager.SceneName = "StageSelect";
         }
 
         _stageManager.SetStageInfo();
-
-        //_fadeManager.FadeOutFlg = true;
         _fadeManager.CallFadeOutFlgEvent(_nextSceneName);
 
         // gameoverせずにクリアした場合は処理スキップ
@@ -214,19 +175,12 @@ public class ResultManager : MonoBehaviour
         }
         
         _gameManager.StaySpotArea = false;
-
-        // 使いまわす
-        // Assets / Resources / SE / Title / PlayClick.wav
-        //AudioClip audio = Resources.Load("SE/Title/PlayClick") as AudioClip;
-        //_audioManager.PlayClickSE(audio);
         _audioManager.PlayMusicSE((int)AudioManager.PlaySE.CLICK_START);
 
         // Titleまたはステージ選択画面の場合
-        //if ("RunToTheSpot" != _fadeManager.SceneName)
         if (_fadeManager.SceneName != "RunToTheSpot")
         {
             // Title用のBGMに変更
-            //_audioManager.TitleBGM();
             _audioManager.PlayMusicBGM((int)AudioManager.PlayBGM.BGM_TITLE_SCENE);
         }
     }
@@ -237,7 +191,5 @@ public class ResultManager : MonoBehaviour
         _gameManager.RemoveGameOverFlgEvent();
         _gameManager.RemoveGameClearFlgEvent();
         _fadeManager.RemoveFadeOutFlgEvent();
-
-        //Debug.Log("OnDisable ResultManager.cs");
     }
 }

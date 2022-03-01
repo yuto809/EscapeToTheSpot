@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class TitleController : MonoBehaviour
 {
@@ -20,17 +19,13 @@ public class TitleController : MonoBehaviour
     public void OnStartButtonClicked()
     {
         _fadeManager.CallFadeOutFlgEvent((int)FadeManager.NextScene.SCENE_STAGE_SELECT);
-        //_fadeManager.SceneName = "StageSelect";
 
         // Assets / Resources / SE / Title / PlayClick.wav
-        //AudioClip audio = Resources.Load("SE/Title/PlayClick") as AudioClip;
-        //_audioManager.PlayClickSE(audio);
         _audioManager.PlayMusicSE((int)AudioManager.PlaySE.CLICK_START);
     }
 
     private void OnDisable()
     {
         _fadeManager.RemoveFadeOutFlgEvent();
-        Debug.Log("OnDisable TitleController.cs");
     }
 }

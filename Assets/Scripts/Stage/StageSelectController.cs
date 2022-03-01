@@ -1,12 +1,10 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class StageSelectController : MonoBehaviour
 {
     private AudioManager _audioManager;
     private StageManager _stageManager;
     private FadeManager _fadeManager;
-    //private AudioClip _audioClip;
 
     private void Awake()
     {
@@ -71,40 +69,26 @@ public class StageSelectController : MonoBehaviour
         _audioManager.PlayMusicSE((int)AudioManager.PlaySE.CLICK_BACK);
         
         _fadeManager.CallFadeOutFlgEvent((int)FadeManager.NextScene.SCENE_TITLE);
-        //_fadeManager.SceneName = "TitleScene";
+    }
+
+    public void OnTutorialButtonClicked()
+    {
+        _stageManager.SelectStageLevel = (int)StageManager.StageLevel.TUTORIAL;
+        _stageManager.SetStageInfo();
+        _audioManager.PlayMusicSE((int)AudioManager.PlaySE.CLICK_NORMAL);
+        _audioManager.PlayMusicBGM((int)AudioManager.PlayBGM.BGM_PLAY_SCENE);
+
+        _fadeManager.CallFadeOutFlgEvent((int)FadeManager.NextScene.SCENE_TUTORIAL);
     }
 
     private void SelectToStage()
     {
-        //_audioManager.PlayBGM();
         _audioManager.PlayMusicBGM((int)AudioManager.PlayBGM.BGM_PLAY_SCENE);
-
-        switch (_stageManager.SelectStageLevel)
-        {
-            case (int)StageManager.StageLevel.EASY:
-                //_fadeManager.FadeOutFlg = true;
-
-                _fadeManager.CallFadeOutFlgEvent((int)FadeManager.NextScene.SCENE_ESCAPE_TO_THE_SPOT);
-                //_fadeManager.SceneName = "RunToTheSpot";
-                break;
-
-            case (int)StageManager.StageLevel.NORMAL:
-                _fadeManager.CallFadeOutFlgEvent((int)FadeManager.NextScene.SCENE_ESCAPE_TO_THE_SPOT);
-                //_fadeManager.SceneName = "RunToTheSpot";
-                break;
-
-            case (int)StageManager.StageLevel.HARD:
-                _fadeManager.CallFadeOutFlgEvent((int)FadeManager.NextScene.SCENE_ESCAPE_TO_THE_SPOT);
-                //_fadeManager.SceneName = "RunToTheSpot";
-                break;
-            default:
-                break;
-        }
+        _fadeManager.CallFadeOutFlgEvent((int)FadeManager.NextScene.SCENE_ESCAPE_TO_THE_SPOT);
     }
 
     private void OnDisable()
     {
         _fadeManager.RemoveFadeOutFlgEvent();
-        Debug.Log("OnDisable StageSelectController.cs");
     }
 }

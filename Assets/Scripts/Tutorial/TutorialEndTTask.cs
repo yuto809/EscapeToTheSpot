@@ -1,56 +1,38 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraAngleTask : ITutorialTask
+public class TutorialEndTask : ITutorialTask
 {
-    public enum TriggerCameraMessage
+    public enum TriggerMessage
     {
-        TRIGGER_MESSAGE_3 = 3,
-        TRIGGER_MESSAGE_4,
+        TRIGGER_MESSAGE_1 = 1,
     }
 
-    private int textIndex;
-    private List<string> textMessages = new List<string>();
-    private string[] _textSentence;
     private TutorialManager _tutorialManager;
-    private Camera _mainCamera;
-
-    private bool _angleChangeFlg;
-    private bool _angleDefaultFlg;
+    private TutorialUnityChanController _unityChan;
+    private string[] _textSentence;
 
     private bool _showMessageComplete;
     private bool _tutorialComplete;
-
-    private bool _isCalled;
 
     private int _currentSentenceNumber;
     private int _currentCharIndex;
     private int _currentSenetenceIndex;
     private string _currentSenetnce;
 
+    private bool _isCalled;
+
     public void OnTaskSetting()
     {
-        // TutorialManager取得
-        _tutorialManager = GameObject.Find("TutorialManager").GetComponent<TutorialManager>();
-        _mainCamera = GameObject.Find("MainCamera").GetComponent<Camera>();
-        _mainCamera.enabled = false;
-
-        textIndex = 0;
+        _tutorialManager = TutorialManager.instance;
+        _unityChan = GameObject.Find("TutorialUnityChan").GetComponent<TutorialUnityChanController>();
 
         _textSentence = new string[]
         {
-            "次は、カメラアングルの切り替えです。",
-            "ゲームを進めていくと、広いステージが出現することがあります。",
-            "そのため、今のカメラアングルでスポットを映し出せない場合があります。",
-            "そのときは、カメラボタンを押下することで、カメラアングルの切り替えが行えます。",
-            "では、カメラアングルを切り替えてみましょう。",
-            "問題ないですね。それでは、次の操作説明です。",
+            "これでゲームの操作方法の説明は以上になります。",
+            "ぜひゲームクリアを目指してください!!",
+            "遊んでみた感想もお待ちしております…!!",
+            "それではEscape To The Runをお楽しみください。",
         };
-
-        _angleChangeFlg = false;
-        _angleDefaultFlg = false;
-
-        _isCalled = false;
 
         _currentSentenceNumber = _textSentence.Length;
         _currentCharIndex = 0;
@@ -59,14 +41,12 @@ public class CameraAngleTask : ITutorialTask
         _currentSenetnce = "";
 
         _tutorialComplete = false;
-
-        // イベント登録
-        _tutorialManager.SetPanelEnabledChangeFlgEvent();
+        _isCalled = false;
     }
 
     public int GetTitleIndex()
     {
-        return (int)TutorialManager.TutorialTitle.TUTORIAL_CAMERA;
+        return (int)TutorialManager.TutorialTitle.TURORIAL_END;
     }
 
     public string GetText()
@@ -93,35 +73,25 @@ public class CameraAngleTask : ITutorialTask
 
                 // 次の1文字へ
                 _currentCharIndex++;
-
             }
 
             // 特定メッセージを読み込んだら、フォーカス解除するイベントをTutorial側に伝える
-            if (!_isCalled && _currentSenetenceIndex == (int)TriggerCameraMessage.TRIGGER_MESSAGE_3)
+            if (!_isCalled && _currentSenetenceIndex == (int)TriggerMessage.TRIGGER_MESSAGE_1)
             {
-                _tutorialManager.CallPanelEnabledChangeFlgEvent();
+                _unityChan.Reborn();
                 _isCalled = true;
+                Debug.Log("UnityChan Reborn");
             }
         }
         // 現在表示されるべきメッセージ内容がすべて表示できている場合
         else
         {
-            if (_currentSenetenceIndex == (int)TriggerCameraMessage.TRIGGER_MESSAGE_4)
-            {
-                // 事前に決められた距離分移動したら移動チュートリアルは終了と判断する
-                if (CheckTutorialAngle())
-                {
-                    // メッセージを初期化して、次のメッセージ内容へ
-                    SetNextSentenceInfo();
-                }
-            }
-            else if (Input.GetMouseButtonDown(0))// (Input.touchCount == 1) tap操作
+            if (Input.GetMouseButtonDown(0))// (Input.touchCount == 1) tap操作
             {
                 // 現在のチュートリアルですべてのメッセージが表示出来たらチュートリアル終了
                 if (_tutorialComplete)
                 {
-                    // イベント削除
-                    _tutorialManager.RemovePanelEnabledChangeFlgEvent();
+                    Debug.Log("チュートリアル完了");
                     return true;
                 }
                 else
@@ -151,6 +121,7 @@ public class CameraAngleTask : ITutorialTask
         if (_currentSenetenceIndex >= _textSentence.Length)
         {
             _tutorialComplete = true;
+
             // SetNextSentenceInfoによってメッセージが初期化されているため
             // 最後の文章を設定
             _currentSenetnce = _textSentence[_currentSenetenceIndex - 1];
@@ -173,31 +144,5 @@ public class CameraAngleTask : ITutorialTask
         _currentCharIndex = 0;
         _currentSenetnce = "";
         _showMessageComplete = false;
-    }
-
-    // カメラアングルの切り替え(ON/OFF)が完了したらチュートリアルは終了と判断する
-    private bool CheckTutorialAngle()
-    {
-        //Debug.Log("カメラCheck");
-        if (_mainCamera.enabled)
-        {
-            _angleChangeFlg = true;
-        }
-
-        // 1度カメラアングルを切り替えている且つ
-        // defaultに戻した場合
-        if (_angleChangeFlg && !_mainCamera.enabled)
-        {
-            _angleDefaultFlg = true;
-        }
-
-        // 移動操作が完了したかどうか？
-        if ((_angleChangeFlg & _angleDefaultFlg))
-        {
-            // 次のチュートリアル実行までパネルを有効に戻すか？
-            return true;
-        }
-
-        return false;
     }
 }

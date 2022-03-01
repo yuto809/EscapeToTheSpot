@@ -37,7 +37,6 @@ public class SpotArea : MonoBehaviour
     private void Start()
     {
         // GameManagerインスタンス取得
-        //_gameManager = GameManager.Instance;
         _stageManager = StageManager.Instance;
         _spotSE = GetComponents<AudioSource>();
 
@@ -63,7 +62,6 @@ public class SpotArea : MonoBehaviour
             {
                 StopCoroutine(_timerCoroutine);
                 _spotSE[0].Stop();
-                //_gameManager.GameOverFlgSet(false);
             }
         }
 
@@ -76,14 +74,9 @@ public class SpotArea : MonoBehaviour
             _spotSE[0].Stop();
             _spotSE[1].Play();
 
-            // GameManagerにクリア報告を渡す
-            // SendMessageは複数オブジェクトで同じスクリプトを使用している場合に役立つ
-
-
-            //_gameManager.GameClearFlgSet(true);
             _gameManager.CallGameClearFlgEvent();
             
-            _unityChan.unitySuccess();
+            _unityChan.UnitySuccess();
             _clearFlg = false;
         }
     }

@@ -10,9 +10,6 @@ public class UnityChanController : MonoBehaviour
     private CharacterController _characterController;
     private UnityEvent _setGameOverFlgEvent;
 
-    // [0]はdead
-    // [1]はclear
-    //private AudioSource[] _unitySE;
     private Animator _animator;
     private AudioClip _audioClip;
     //　キャラクターの速度
@@ -55,7 +52,7 @@ public class UnityChanController : MonoBehaviour
         // Ghost側のColliderでも判断している
         if (hit.gameObject.tag == "ghost")
         {
-            unityDead();
+            UnityDead();
         }
     }
 
@@ -64,52 +61,52 @@ public class UnityChanController : MonoBehaviour
     {
         if (other.CompareTag("enemy"))
         {
-            unityDead();
+            UnityDead();
         }
     }
 
     // ボタン処理
-    public void pushLeft()
+    public void PushLeft()
     {
         _leftDirection = true;
     }
 
-    public void pushRight()
+    public void PushRight()
     {
         _rightDirection = true;
     }
 
-    public void pushUp()
+    public void PushUp()
     {
         _upDirection = true;
     }
 
-    public void pushDown()
+    public void PushDown()
     {
         _downDirection = true;
     }
 
-    public void leaveLeft()
+    public void LeaveLeft()
     {
         _leftDirection = false;
     }
 
-    public void leaveRight()
+    public void LeaveRight()
     {
         _rightDirection = false;
     }
 
-    public void leaveUp()
+    public void LeaveUp()
     {
         _upDirection = false;
     }
 
-    public void leaveDown()
+    public void LeaveDown()
     {
         _downDirection = false;
     }
 
-    public void unityDead()
+    public void UnityDead()
     {
         // unityChanが生きている場合
         if (false == _deadFlg)
@@ -118,38 +115,28 @@ public class UnityChanController : MonoBehaviour
             _animator.SetBool("Dead", true);
 
             // 障害物に当たったらSEを流す
-            //_audioClip = Resources.Load("SE/Damage/Damage") as AudioClip;
-            //_audioManager.DamageSE(_audioClip);
             _audioManager.PlayMusicSE((int)AudioManager.PlaySE.DAMAGE_UNITYCHAN);
 
             _animator.SetTrigger("Damage");
             _animator.SetTrigger("KneelDown");
 
             // ゆにぃいい・・・(負け)
-            //_unitySE[0].Play();
             _audioManager.PlayMusicVoice((int)AudioManager.PlayVoice.VOICE_DEAD);
-            // GameMangerにイベント発行して、GameManger側でフラグ状態を更新する
-            //_setGameOverFlgEvent = new UnityEvent();
-            //_setGameOverFlgEvent.Invoke(); // イベント発行
-            //_gameManager.GameOverFlgSet(true);
             _gameManager.CallGameOverFlgEvent();
         }
     }
 
     // SpotAreaから呼ばれる
-    public void unitySuccess()
+    public void UnitySuccess()
     {
         //Debug.Log("ゲームクリアフラグ　：" + gameManager.GameClearFlg);
         if (false == _successFlg)
         {
             if (_gameManager.GameClearFlg)
             {
-                //Debug.Log("SUCCESS");
                 _successFlg = true;
                 _animator.SetTrigger("Success");
-                //_unitySE[1].Play();
                 _audioManager.PlayMusicVoice((int)AudioManager.PlayVoice.VOICE_CLEAR);
-
             }
         }
     }
@@ -191,7 +178,6 @@ public class UnityChanController : MonoBehaviour
     {
         // unityChanが死んだ、もしくはゲームクリアの場合
         if (_deadFlg || _successFlg)
-        //if ((true == _deadFlg) || (true == _successFlg))
         {
             _animator.SetFloat("Speed", 0f);
             return;
@@ -262,10 +248,4 @@ public class UnityChanController : MonoBehaviour
         _velocity.y += Physics.gravity.y * Time.deltaTime;
         _characterController.Move(_velocity * Time.deltaTime);
     }
-
-    //private void OnDisable()
-    //{
-    //    Debug.Log("OnDisable UnityChanController.cs");
-    //    _gameManager.RemoveGameOberFlgEvent();
-    //}
 }

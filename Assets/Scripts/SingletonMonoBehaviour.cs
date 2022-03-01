@@ -1,15 +1,15 @@
 using UnityEngine;
 
-// “n‚³‚ê‚½Œ^(T)‚Åˆ—‚ğs‚¢A“n‚³‚ê‚½Œ^(T)‚ÍWhere‚É‚æ‚Á‚ÄMonoBehavor‚ğŒp³‚µ‚Ä‚¢‚é
+// æ¸¡ã•ã‚ŒãŸå‹(T)ã§å‡¦ç†ã‚’è¡Œã„ã€æ¸¡ã•ã‚ŒãŸå‹(T)ã¯Whereã«ã‚ˆã£ã¦MonoBehavorã‚’ç¶™æ‰¿ã—ã¦ã„ã‚‹
 public class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour
 {
     /// <summary>
-    /// xxManager‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğƒVƒ“ƒOƒ‹ƒgƒ“‚Æ‚µ‚Ä•Û‚·‚é
+    /// xxManagerã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã¨ã—ã¦ä¿æŒã™ã‚‹
     /// </summary>
     private static T _Instance;
 
     /// <summary>
-    /// “n‚³‚ê‚½Œ^‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ¶¬‚·‚é
+    /// æ¸¡ã•ã‚ŒãŸå‹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆã™ã‚‹
     /// </summary>
     public static T Instance
     {

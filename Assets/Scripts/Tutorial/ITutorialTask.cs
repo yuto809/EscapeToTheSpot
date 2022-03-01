@@ -1,30 +1,30 @@
 public interface ITutorialTask
 {
     /// <summary>
-    /// ƒ`ƒ…[ƒgƒŠƒAƒ‹‚Ìƒ^ƒCƒgƒ‹(index)‚ðŽæ“¾‚·‚é
+    /// ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã®ã‚¿ã‚¤ãƒˆãƒ«(index)ã‚’å–å¾—ã™ã‚‹
     /// </summary>
     /// <returns></returns>
     int GetTitleIndex();
 
     /// <summary>
-    /// à–¾•¶‚ðŽæ“¾‚·‚é
+    /// èª¬æ˜Žæ–‡ã‚’å–å¾—ã™ã‚‹
     /// </summary>
     /// <returns></returns>
     string GetText();
 
     /// <summary>
-    /// ƒ`ƒ…[ƒgƒŠƒAƒ‹ƒ^ƒXƒN‚ªÝ’è‚³‚ê‚½Û‚ÉŽÀs‚³‚ê‚é
+    /// ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã‚¿ã‚¹ã‚¯ãŒè¨­å®šã•ã‚ŒãŸéš›ã«å®Ÿè¡Œã•ã‚Œã‚‹
     /// </summary>
     void OnTaskSetting();
 
     /// <summary>
-    /// ƒ`ƒ…[ƒgƒŠƒAƒ‹‚ª’B¬‚³‚ê‚½‚©”»’è‚·‚é
+    /// ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ãŒé”æˆã•ã‚ŒãŸã‹åˆ¤å®šã™ã‚‹
     /// </summary>
     /// <returns></returns>
     bool CheckTask();
 
     /// <summary>
-    /// ’B¬Œã‚ÉŽŸ‚Ìƒ^ƒXƒN‚Ö‘JˆÚ‚·‚é‚Ü‚Å‚ÌŽžŠÔ(•b)
+    /// é”æˆå¾Œã«æ¬¡ã®ã‚¿ã‚¹ã‚¯ã¸é·ç§»ã™ã‚‹ã¾ã§ã®æ™‚é–“(ç§’)
     /// </summary>
     /// <returns></returns>
     float GetTransitionTime();

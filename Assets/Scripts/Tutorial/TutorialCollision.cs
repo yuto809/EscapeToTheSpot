@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class Collision : MonoBehaviour
+public class TutorialCollision : MonoBehaviour
 {
     // unityChanにアタッチされたスクリプトを、アタッチする
     [SerializeField]
-    private UnityChanController _unityChan;
+    private TutorialUnityChanController _unityChan;
 
     private void OnTriggerEnter(Collider other)
     {

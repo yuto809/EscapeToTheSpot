@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.IO;
 
 public class AudioManager : SingletonMonoBehaviour<AudioManager>
@@ -33,8 +32,6 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
     private AudioClip _playModeBGM;
     private AudioClip _audioBundle;
  
-    //public string CurrentSceneName { set; get; }
-
     // シングルトンでSceneを跨いでもオブジェクトは残すようにする
     private void Awake()
     {
@@ -119,76 +116,8 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
         return retClip;
     }
 
-    //private void ClickPlaySE(AudioClip audioClip)
-    //{
-    //    _clickSE = GetComponent<AudioSource>();
-    //    _clickSE.clip = audioClip;
-    //    _clickSE.Play();
-    //}
-
-
-    //// 全部1つにまとめられる
-    //public void PlayClickSE(AudioClip audioClip)
-    //{
-    //    ClickPlaySE(audioClip);
-    //}
-
-
-    //// stage
-    //public void EasyClickSE(AudioClip audioClip)
-    //{
-    //    ClickPlaySE(audioClip);
-    //}
-
-    //// stage
-    //public void NormalClickSE(AudioClip audioClip)
-    //{
-    //    ClickPlaySE(audioClip);
-    //}
-    //// stage
-    //public void HardClickSE(AudioClip audioClip)
-    //{
-    //    ClickPlaySE(audioClip);
-    //}
-    //// stage
-    //public void BackClickSE(AudioClip audioClip)
-    //{
-    //    ClickPlaySE(audioClip);
-    //}
-    //public void DamageSE(AudioClip audioClip)
-    //{
-    //    ClickPlaySE(audioClip);
-    //}
-
-    //    // シーンが切り替わった時に呼ばれるメソッド　
-    //    public void OnActiveSceneChanged(string nextSceneName)//(Scene nextScene)
-    //    {
-    //        // ステージセレクト画面からステージ画面に遷移するとき、BGMを切り替える
-    //        if (CurrentSceneName == "StageSelect" && nextSceneName == "RunToTheSpot")
-    //        {
-    //            _BGM[1].Stop();
-    //            Invoke("PlayModeBGM", 1.0f);
-    //        }
-    //    }
-
-    //    private void PlayModeBGM()
-    //    {
-    //        //BGM[2].clip = audioBundle;
-    //        _BGM[2].Play();
-
-    ////        BGM[2].Play();
-    //    }
-
-
-
-
-
-
     public void PlayMusicBGM(int playBGM)
     {
-        // [1]をゲームBGMとして使用する
-        //_BGM = GetComponents<AudioSource>();
-
         // 流すBGMが決まるまでは停止する
         _BGM[1].Stop();
         _BGM[1].clip = GetUseAudioClipBGM(playBGM);
@@ -230,7 +159,6 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
     {
         _BGM[1].Play();
     }
-
 
     public void PlayMusicVoice(int playVoice)
     {
@@ -274,26 +202,4 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
 
         return retClip;
     }
-
-    //public void PlayBGM()
-    //{
-    //    _BGM[1].Stop();
-    //    Invoke("PlayModeBGM", 1.0f);
-    //}
-
-    //private void PlayModeBGM()
-    //{
-    //    _BGM[2].Play();
-    //}
-
-    //public void TitleBGM()
-    //{
-    //    _BGM[2].Stop();
-    //    Invoke("PlayTitleBGM", 1.0f);
-    //}
-
-    //private void PlayTitleBGM()
-    //{
-    //    _BGM[1].Play();
-    //}
 }

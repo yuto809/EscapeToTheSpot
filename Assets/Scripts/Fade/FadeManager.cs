@@ -14,7 +14,8 @@ public class FadeManager : SingletonMonoBehaviour<FadeManager>
         SCENE_TITLE = 0,
         SCENE_STAGE_SELECT,
         SCENE_ESCAPE_TO_THE_SPOT,
-        SCENE_GAME_RESULT
+        SCENE_GAME_RESULT,
+        SCENE_TUTORIAL,
     }
 
     [SerializeField]
@@ -48,9 +49,6 @@ public class FadeManager : SingletonMonoBehaviour<FadeManager>
             return _fadeInFlg;
         }
     }
-
-    // 遷移先シーン名
-    //public string SceneName { set; get; }
 
     public string SceneName
     {
@@ -93,7 +91,6 @@ public class FadeManager : SingletonMonoBehaviour<FadeManager>
 
     private void Start()
     {
-        //SceneName = "StageSelect";
         _nextSceneName = "StageSelect";
 
         _fadeImage = _fade.GetComponentInChildren<Image>();
@@ -207,18 +204,15 @@ public class FadeManager : SingletonMonoBehaviour<FadeManager>
             case (int)FadeManager.NextScene.SCENE_GAME_RESULT:
                 _nextSceneName = "GameResult";
                 break;
+            case (int)FadeManager.NextScene.SCENE_TUTORIAL:
+                _nextSceneName = "Tutorial";
+                break;
             default:
                 break;
         }
 
         _fadeOutFlgEvent.Invoke();
     }
-    
-    // FadeOutFlgイベント関連処理
-    //public void CallFadeOutFlgEvent()
-    //{
-    //    _fadeOutFlgEvent.Invoke();
-    //}
 
     // FadeOutFlgイベント関連処理
     public void RemoveFadeOutFlgEvent()

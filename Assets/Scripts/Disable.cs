@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class Disable : MonoBehaviour
 {
@@ -15,14 +12,13 @@ public class Disable : MonoBehaviour
     }
 
     /// <summary>
-    /// シーン切り替え時に、登録したイベントを削除する
+    /// 繧ｷ繝ｼ繝ｳ蛻�繧頑崛縺域凾縺ｫ縲∫匳骭ｲ縺励◆繧､繝吶Φ繝医ｒ蜑企勁縺吶ｋ
     /// </summary>
     private void OnDisable()
     {
+        Debug.Log("OnDisable Disable.cs");
         _gameManager.RemoveGameOverFlgEvent();
         _gameManager.RemoveGameClearFlgEvent();
         _fadeManager.RemoveFadeOutFlgEvent();
-
-        //Debug.Log("OnDisable Disable.cs");
     }
 }
